@@ -49,7 +49,8 @@ export function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-screen-lg items-center justify-between px-6 py-5">
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center gap-2">
+          {/* Drop your logo at /public/logo.svg (recommended: 140x40px) */}
           <span className="font-serif text-[22px] font-light tracking-wide text-foreground">
             Verazoi
           </span>

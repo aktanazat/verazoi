@@ -21,9 +21,9 @@ export function Closing() {
             visible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
           }`}
         >
-          <span className="text-gradient">This is metabolic</span>
+          <span className="text-gradient">Your data already</span>
           <br />
-          <span className="italic text-foreground">intelligence.</span>
+          <span className="italic text-foreground">has the answers.</span>
         </p>
       </div>
     </section>

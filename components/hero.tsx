@@ -50,14 +50,12 @@ export function Hero() {
 
   return (
     <section className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-6 pt-20">
-      {/* Ambient gradient orbs */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/4 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[150px]" />
         <div className="absolute -right-40 top-20 h-[500px] w-[500px] rounded-full bg-primary/[0.03] blur-[120px]" />
         <div className="absolute -left-40 bottom-40 h-[400px] w-[400px] rounded-full bg-primary/[0.02] blur-[100px]" />
       </div>
 
-      {/* Radial grid pattern */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--border)_1px,_transparent_1px)] [background-size:48px_48px] opacity-30" />
 
       <div
@@ -65,28 +63,21 @@ export function Hero() {
           mounted ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
         }`}
       >
-        <div className="mx-auto mb-8 inline-flex items-center rounded-full border border-primary/15 bg-primary/[0.04] px-4 py-1.5">
-          <span className="mr-2 h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-          <span className="text-[11px] font-medium tracking-[0.1em] text-primary">
-            PREDICTIVE METABOLIC INTELLIGENCE
-          </span>
-        </div>
-
-        <h1 className="font-serif text-[clamp(2.5rem,6vw,5rem)] font-light leading-[1.05] tracking-tight text-balance">
-          <span className="text-gradient">Already wearing a CGM?</span>
+        <h1 className="font-serif text-[clamp(3rem,7vw,5.5rem)] font-light leading-[1.05] tracking-tight text-balance">
+          <span className="text-gradient">This is metabolic</span>
           <br />
-          <span className="italic text-foreground">Turn your data into clarity.</span>
+          <span className="italic text-foreground">intelligence.</span>
         </h1>
 
-        <div className="mt-6 h-8">
+        <p className="mx-auto mt-8 max-w-lg text-[clamp(1.1rem,2.2vw,1.35rem)] leading-relaxed text-muted-foreground">
+          Already wearing a CGM? Verazoi turns your data into a Stability Score and projected next steps.
+        </p>
+
+        <div className="mt-4 h-8">
           <p className="font-serif text-[20px] italic text-primary/60">
             <RotatingText />
           </p>
         </div>
-
-        <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
-          Verazoi turns your CGM patterns into a Stability Score and projected next steps.
-        </p>
 
         <div className="mt-10 flex justify-center">
           <a
@@ -104,7 +95,7 @@ export function Hero() {
           mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         }`}
       >
-        <a href="#problem" className="group">
+        <a href="#overview" className="group">
           <ArrowDown className="h-4 w-4 animate-bounce text-muted-foreground/40 transition-colors group-hover:text-muted-foreground" />
         </a>
       </div>
