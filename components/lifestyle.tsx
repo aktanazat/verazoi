@@ -2,18 +2,21 @@
 
 import Image from "next/image"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import cgmMonitor from "@/public/images/cgm-monitor.jpg"
+import cgmBreakfast from "@/public/images/cgm-breakfast.jpg"
+import cgmData from "@/public/images/cgm-data.jpg"
 
 const images = [
   {
-    src: "/images/cgm-monitor.jpg",
+    src: cgmMonitor,
     alt: "Person checking glucose readings on their phone",
   },
   {
-    src: "/images/cgm-breakfast.jpg",
+    src: cgmBreakfast,
     alt: "Man reviewing glucose history over breakfast",
   },
   {
-    src: "/images/cgm-data.jpg",
+    src: cgmData,
     alt: "Woman managing her glucose with a smile",
   },
 ]
