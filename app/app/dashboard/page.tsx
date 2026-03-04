@@ -14,7 +14,7 @@ export default function DashboardPage() {
         Dashboard
       </h1>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid gap-5 lg:grid-cols-2">
         <StabilityScore />
         <SpikeRisk />
         <div className="lg:col-span-2">

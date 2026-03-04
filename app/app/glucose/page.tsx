@@ -56,8 +56,8 @@ export default function GlucosePage() {
         Glucose
       </h1>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-2">
-        <div className="border border-border p-6">
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <div className="border border-border p-5">
           <label className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">
             Reading (mg/dL)
           </label>
@@ -67,7 +67,7 @@ export default function GlucosePage() {
               value={value}
               onChange={(e) => setValue(e.target.value)}
               placeholder="0"
-              className="w-full bg-transparent font-serif text-[48px] font-light text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
+              className="w-full bg-transparent font-serif text-[36px] font-light text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
             />
             <span className="text-[14px] text-muted-foreground">mg/dL</span>
           </div>

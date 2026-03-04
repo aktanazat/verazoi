@@ -63,7 +63,7 @@ export default function MealsPage() {
       </h1>
 
       {/* Meal type selector */}
-      <div className="mt-8">
+      <div className="mt-6">
         <label className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">
           Meal type
         </label>
@@ -85,7 +85,7 @@ export default function MealsPage() {
       </div>
 
       {/* Quick food tags */}
-      <div className="mt-8">
+      <div className="mt-6">
         <label className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">
           What did you eat?
         </label>
