@@ -76,7 +76,13 @@ export function Navbar() {
           </div>
         </div>
 
-        <div className="hidden items-center md:flex">
+        <div className="hidden items-center gap-4 md:flex">
+          <Link
+            href="/login"
+            className="text-[13px] tracking-[0.02em] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Log in
+          </Link>
           <Link
             href="/early-access"
             className={`group relative overflow-hidden rounded-full bg-primary px-5 py-2 text-[13px] tracking-[0.02em] text-primary-foreground transition-all duration-500 hover:shadow-lg hover:shadow-primary/20 ${
@@ -121,9 +127,16 @@ export function Navbar() {
               </Link>
             ))}
             <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="mt-4 py-3 text-center text-[13px] tracking-[0.02em] text-foreground"
+            >
+              Log in
+            </Link>
+            <Link
               href="/early-access"
               onClick={() => setOpen(false)}
-              className="mt-4 rounded-full bg-primary px-5 py-3 text-center text-[13px] tracking-[0.02em] text-primary-foreground"
+              className="rounded-full bg-primary px-5 py-3 text-center text-[13px] tracking-[0.02em] text-primary-foreground"
             >
               Get early access
             </Link>

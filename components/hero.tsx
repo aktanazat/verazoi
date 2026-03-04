@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
+import Link from "next/link"
 import { ArrowDown } from "lucide-react"
 
 const phrases = [
@@ -80,13 +81,13 @@ export function Hero() {
         </div>
 
         <div className="mt-10 flex justify-center">
-          <a
+          <Link
             href="/early-access"
             className="group relative overflow-hidden rounded-full bg-primary px-8 py-3.5 text-[13px] font-medium tracking-[0.04em] text-primary-foreground transition-all duration-300 hover:shadow-xl hover:shadow-primary/25"
           >
             <span className="relative z-10">Get early access</span>
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          </a>
+          </Link>
         </div>
       </div>
 
