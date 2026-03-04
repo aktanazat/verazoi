@@ -2,13 +2,11 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Activity, Utensils, BarChart3, Droplets } from "lucide-react"
+import { BarChart3, ClipboardPen } from "lucide-react"
 
 const tabs = [
-  { label: "Glucose", href: "/app/glucose", icon: Droplets },
-  { label: "Meals", href: "/app/meals", icon: Utensils },
-  { label: "Activity", href: "/app/activity", icon: Activity },
   { label: "Dashboard", href: "/app/dashboard", icon: BarChart3 },
+  { label: "Log", href: "/app/log", icon: ClipboardPen },
 ]
 
 type DocumentWithViewTransition = Document & {

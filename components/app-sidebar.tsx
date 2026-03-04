@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Activity, BarChart3, Droplets, Utensils } from "lucide-react"
+import { BarChart3, ClipboardPen } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -14,9 +14,7 @@ import {
 
 const items = [
   { label: "Dashboard", href: "/app/dashboard", icon: BarChart3 },
-  { label: "Glucose", href: "/app/glucose", icon: Droplets },
-  { label: "Meals", href: "/app/meals", icon: Utensils },
-  { label: "Activity", href: "/app/activity", icon: Activity },
+  { label: "Log", href: "/app/log", icon: ClipboardPen },
 ]
 
 export function AppSidebar() {
