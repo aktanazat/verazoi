@@ -41,7 +41,7 @@ export function DailyTimeline() {
                 )}
               </div>
 
-              <div className={`flex-1 ${i < events.length - 1 ? "pb-5" : ""}`}>
+              <div className={`flex-1 ${i < events.length - 1 ? "pb-3" : ""}`}>
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="text-[13px] text-foreground">{event.label}</p>
