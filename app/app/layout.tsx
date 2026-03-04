@@ -15,7 +15,7 @@ export default function AppLayout({
         <div className="flex min-h-dvh">
           <AppSidebar />
           <SidebarInset>
-            <main className="flex min-h-dvh flex-col justify-center px-5 pb-20 pt-6 md:px-10 md:pb-8">
+            <main className="px-5 pb-20 pt-6 md:px-10 md:pb-8">
               <AppRouteTransition>{children}</AppRouteTransition>
             </main>
           </SidebarInset>
