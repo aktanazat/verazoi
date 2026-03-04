@@ -50,28 +50,30 @@ export function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <nav className="mx-auto flex max-w-screen-lg items-center justify-between px-6 py-5">
+      <nav className="relative mx-auto flex max-w-screen-lg items-center justify-between px-6 py-5">
         <Link href="/" className="flex items-center gap-2">
           <span className="font-serif text-[22px] font-light tracking-wide text-foreground">
             Verazoi
           </span>
         </Link>
 
-        <div className="hidden items-center gap-2 md:flex">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setActiveHref(l.href)}
-              className={`rounded-full px-3 py-1.5 text-[12px] tracking-[0.03em] transition-colors duration-300 ${
-                activeHref === l.href
-                  ? "bg-primary/10 text-foreground"
-                  : "text-muted-foreground/70 hover:text-foreground"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
+        <div className="absolute inset-x-0 hidden justify-center md:flex">
+          <div className="flex items-center gap-2">
+            {links.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setActiveHref(l.href)}
+                className={`rounded-full px-3 py-1.5 text-[12px] tracking-[0.03em] transition-colors duration-300 ${
+                  activeHref === l.href
+                    ? "bg-primary/10 text-foreground"
+                    : "text-muted-foreground/70 hover:text-foreground"
+                }`}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="hidden items-center md:flex">
