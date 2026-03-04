@@ -18,7 +18,7 @@ export function AppRouteTransition({ children }: { children: React.ReactNode }) 
   return (
     <div
       key={pathname}
-      className="animate-[app-page-enter_320ms_cubic-bezier(0.22,1,0.36,1)] will-change-transform"
+      className="flex flex-1 flex-col animate-[app-page-enter_320ms_cubic-bezier(0.22,1,0.36,1)] will-change-transform"
     >
       {children}
     </div>

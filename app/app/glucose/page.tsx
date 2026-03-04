@@ -48,7 +48,7 @@ export default function GlucosePage() {
   }))
 
   return (
-    <div>
+    <div className="flex flex-1 flex-col">
       <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
         Log Reading
       </p>
@@ -56,7 +56,7 @@ export default function GlucosePage() {
         Glucose
       </h1>
 
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
+      <div className="mt-6 grid flex-1 gap-6 md:grid-cols-2">
         <div className="border border-border p-5">
           <label className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">
             Reading (mg/dL)
@@ -102,7 +102,7 @@ export default function GlucosePage() {
           </button>
         </div>
 
-        <div>
+        <div className="border border-border p-5">
           <div className="flex items-center gap-2">
             <Clock className="h-3.5 w-3.5 text-muted-foreground/70" strokeWidth={1.5} />
             <p className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">
