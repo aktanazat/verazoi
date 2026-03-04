@@ -57,8 +57,8 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="absolute inset-x-0 hidden justify-center md:flex">
-          <div className="flex items-center gap-2">
+        <div className="pointer-events-none absolute inset-x-0 hidden justify-center md:flex">
+          <div className="pointer-events-auto flex items-center gap-2">
             {links.map((l) => (
               <Link
                 key={l.href}
