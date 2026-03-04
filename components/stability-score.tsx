@@ -23,7 +23,7 @@ export function StabilityScore() {
     return () => clearTimeout(timer)
   }, [score])
 
-  const circumference = 2 * Math.PI * 54
+  const circumference = 2 * Math.PI * 76
   const offset = circumference - (displayed / 100) * circumference
 
   const getLabel = () => {
@@ -45,7 +45,7 @@ export function StabilityScore() {
     : 0
 
   return (
-    <div className="border border-border p-6">
+    <div className="border border-border p-5">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">
@@ -60,22 +60,22 @@ export function StabilityScore() {
         </span>
       </div>
 
-      <div className="mt-6 flex items-center justify-center">
+      <div className="mt-4 flex items-center justify-center">
         <div className="relative">
-          <svg width="132" height="132" className="-rotate-90">
+          <svg width="180" height="180" className="-rotate-90">
             <circle
-              cx="66"
-              cy="66"
-              r="54"
+              cx="90"
+              cy="90"
+              r="76"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
               className="text-border"
             />
             <circle
-              cx="66"
-              cy="66"
-              r="54"
+              cx="90"
+              cy="90"
+              r="76"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -86,24 +86,24 @@ export function StabilityScore() {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="-mt-1 font-serif text-[36px] font-light leading-none text-foreground">
+            <span className="-mt-1 font-serif text-[48px] font-light leading-none text-foreground">
               {displayed}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-3 gap-4">
+      <div className="mt-4 grid grid-cols-3 gap-4">
         <div className="text-center">
-          <p className="font-serif text-[18px] font-light text-foreground">{avgGlucose}</p>
+          <p className="font-serif text-[22px] font-light text-foreground">{avgGlucose}</p>
           <p className="mt-0.5 text-[11px] text-muted-foreground">Avg glucose</p>
         </div>
         <div className="text-center">
-          <p className="font-serif text-[18px] font-light text-foreground">{variability}</p>
+          <p className="font-serif text-[22px] font-light text-foreground">{variability}</p>
           <p className="mt-0.5 text-[11px] text-muted-foreground">Variability</p>
         </div>
         <div className="text-center">
-          <p className="font-serif text-[18px] font-light text-foreground">{inRange}%</p>
+          <p className="font-serif text-[22px] font-light text-foreground">{inRange}%</p>
           <p className="mt-0.5 text-[11px] text-muted-foreground">In range</p>
         </div>
       </div>
