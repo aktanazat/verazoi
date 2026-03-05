@@ -5,7 +5,6 @@ import { HowItWorks } from "@/components/how-it-works"
 import { StabilityExplainer } from "@/components/stability-explainer"
 import { ScoreDemo } from "@/components/score-demo"
 import { StartupFeatures } from "@/components/startup-features"
-import { FAQ } from "@/components/faq"
 
 type ContentTab = "preview" | "details"
 
@@ -68,7 +67,7 @@ export function PageSectionsTabs() {
                   activeTab === "preview" ? "bg-primary/12 text-primary" : "text-muted-foreground"
                 }`}
               >
-                Quick View
+                App Preview
               </button>
               <button
                 type="button"
@@ -91,7 +90,6 @@ export function PageSectionsTabs() {
           <HowItWorks />
           <StabilityExplainer />
           <ScoreDemo />
-          <FAQ />
         </>
       )}
 

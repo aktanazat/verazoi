@@ -119,7 +119,8 @@ export function HowItWorks() {
     <section id="how-it-works" className="relative px-6 py-28 lg:py-36">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        <div className="absolute right-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-primary/[0.02] blur-[120px]" />
+        <div className="absolute right-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-primary/[0.05] blur-[120px]" />
+        <div className="absolute -left-20 top-1/3 h-[400px] w-[400px] rounded-full bg-primary/[0.03] blur-[100px]" />
       </div>
 
       <div ref={ref} className="mx-auto max-w-screen-lg">
@@ -128,11 +129,12 @@ export function HowItWorks() {
             visible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-primary/60">
+          <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-primary/70">
             How It Works
           </p>
-          <h2 className="mx-auto mt-6 max-w-xl font-serif text-[clamp(1.75rem,3.5vw,3rem)] font-light leading-[1.1] text-foreground text-balance">
-            Four steps to structured clarity
+          <h2 className="mx-auto mt-6 max-w-xl font-serif text-[clamp(1.75rem,3.5vw,3rem)] font-light leading-[1.1] text-balance">
+            <span className="text-gradient">Four steps</span>{" "}
+            <span className="text-foreground">to structured clarity</span>
           </h2>
         </div>
 

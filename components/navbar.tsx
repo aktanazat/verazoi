@@ -6,7 +6,8 @@ import { Menu, X } from "lucide-react"
 
 const links = [
   { label: "Overview", href: "#overview" },
-  { label: "Quick View", href: "#quick-view" },
+  { label: "App", href: "#quick-view" },
+  { label: "FAQ", href: "#faq" },
 ]
 
 export function Navbar() {

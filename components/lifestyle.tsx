@@ -27,7 +27,9 @@ export function Lifestyle() {
   return (
     <section className="relative px-6 py-28 lg:py-36">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        <div className="absolute -left-20 top-1/3 h-[400px] w-[400px] rounded-full bg-primary/[0.04] blur-[120px]" />
+        <div className="absolute -right-20 bottom-1/4 h-[350px] w-[350px] rounded-full bg-primary/[0.03] blur-[100px]" />
       </div>
 
       <div ref={ref} className="mx-auto max-w-screen-lg">

@@ -507,8 +507,11 @@ export function PhoneMockup() {
   }
 
   return (
-    <section id="overview" className="relative px-6 py-16 lg:py-24">
-      <div ref={ref} className="mx-auto max-w-screen-lg">
+    <section id="overview" className="relative px-6 py-16 lg:py-24 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.06] blur-[160px]" />
+      </div>
+      <div ref={ref} className="relative mx-auto max-w-screen-lg">
         <div
           className={`flex flex-col items-center transition-all duration-1000 ease-out ${
             visible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"
@@ -565,6 +568,15 @@ export function PhoneMockup() {
               />
             </div>
 
+          </div>
+
+          <div className="mt-10 text-center">
+            <p className="text-[13px] text-muted-foreground">
+              Tap through the <span className="text-primary">Dashboard</span>, <span className="text-primary">Timeline</span>, and <span className="text-primary">Plan</span> tabs above
+            </p>
+            <p className="mt-2 text-[12px] italic text-primary/50">
+              Every recommendation is generated from your personal glucose patterns
+            </p>
           </div>
         </div>
       </div>

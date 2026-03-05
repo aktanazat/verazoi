@@ -86,7 +86,8 @@ export function FAQ() {
   return (
     <section id="faq" className="relative px-6 py-28 lg:py-36">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
+        <div className="absolute right-0 top-1/3 h-[400px] w-[400px] rounded-full bg-primary/[0.03] blur-[120px]" />
       </div>
 
       <div ref={ref} className="mx-auto max-w-screen-lg">
