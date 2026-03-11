@@ -1,6 +1,7 @@
 "use client"
 
-import { createContext, useContext, useReducer, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
+import * as api from "@/lib/api"
 
 type TimelineEvent = {
   time: string
@@ -35,6 +36,12 @@ type SleepEntry = {
   quality: string
 }
 
+type SpikeFactorData = {
+  label: string
+  impact: string
+  weight: number
+}
+
 type AppState = {
   meals: Meal[]
   glucoseReadings: GlucoseReading[]
@@ -42,129 +49,129 @@ type AppState = {
   sleepEntries: SleepEntry[]
   timeline: TimelineEvent[]
   stabilityScore: number
+  spikeRisk: number
+  spikeFactors: SpikeFactorData[]
+  isLoading: boolean
 }
 
-type Action =
-  | { type: "addMeal"; payload: Meal }
-  | { type: "addGlucoseReading"; payload: GlucoseReading }
-  | { type: "addActivity"; payload: ActivityEntry }
-  | { type: "addSleep"; payload: SleepEntry }
-
-const seedTimeline: TimelineEvent[] = [
-  { time: "7:00 AM", type: "glucose", label: "Fasting", value: "88 mg/dL" },
-  { time: "7:45 AM", type: "meal", label: "Breakfast", value: "Oatmeal, berries" },
-  { time: "8:15 AM", type: "activity", label: "Morning walk", value: "25 min, light" },
-  { time: "9:30 AM", type: "glucose", label: "Post-meal", value: "112 mg/dL" },
-  { time: "12:30 PM", type: "meal", label: "Lunch", value: "Grilled chicken, salad" },
-  { time: "2:00 PM", type: "glucose", label: "Post-meal", value: "104 mg/dL" },
-  { time: "5:30 PM", type: "activity", label: "Yoga", value: "45 min, moderate" },
-  { time: "11:00 PM", type: "sleep", label: "Sleep logged", value: "5.5 hrs, fair" },
-]
-
-const seedGlucose: GlucoseReading[] = [
-  { time: "7:00 AM", value: 88, timing: "fasting" },
-  { time: "9:30 AM", value: 112, timing: "after" },
-  { time: "2:00 PM", value: 104, timing: "after" },
-]
-
-const initialState: AppState = {
-  meals: [],
-  glucoseReadings: seedGlucose,
-  activities: [],
-  sleepEntries: [],
-  timeline: seedTimeline,
-  stabilityScore: 74,
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
 }
 
-function recalcScore(state: AppState): number {
-  let score = 74
-  for (const r of state.glucoseReadings.slice(seedGlucose.length)) {
-    if (r.value >= 70 && r.value <= 140) score += 0.5
-    else score -= 1
-  }
-  score += state.activities.length * 0.5
-  for (const s of state.sleepEntries) {
-    if (s.hours >= 7 && (s.quality === "good" || s.quality === "great")) score += 0.5
-    else score -= 0.5
-  }
-  return Math.max(0, Math.min(100, Math.round(score)))
-}
-
-function nowTime(): string {
-  return new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
-}
-
-function reducer(state: AppState, action: Action): AppState {
-  switch (action.type) {
-    case "addMeal": {
-      const event: TimelineEvent = {
-        time: nowTime(),
-        type: "meal",
-        label: action.payload.mealType,
-        value: action.payload.foods.join(", "),
-      }
-      const next = {
-        ...state,
-        meals: [...state.meals, action.payload],
-        timeline: [...state.timeline, event],
-      }
-      return { ...next, stabilityScore: recalcScore(next) }
-    }
-    case "addGlucoseReading": {
-      const timingLabel = action.payload.timing === "fasting" ? "Fasting" : action.payload.timing === "before" ? "Pre-meal" : "Post-meal"
-      const event: TimelineEvent = {
-        time: nowTime(),
-        type: "glucose",
-        label: timingLabel,
-        value: `${action.payload.value} mg/dL`,
-      }
-      const next = {
-        ...state,
-        glucoseReadings: [...state.glucoseReadings, action.payload],
-        timeline: [...state.timeline, event],
-      }
-      return { ...next, stabilityScore: recalcScore(next) }
-    }
-    case "addActivity": {
-      const event: TimelineEvent = {
-        time: nowTime(),
-        type: "activity",
-        label: action.payload.activityType,
-        value: `${action.payload.duration} min, ${action.payload.intensity.toLowerCase()}`,
-      }
-      const next = {
-        ...state,
-        activities: [...state.activities, action.payload],
-        timeline: [...state.timeline, event],
-      }
-      return { ...next, stabilityScore: recalcScore(next) }
-    }
-    case "addSleep": {
-      const event: TimelineEvent = {
-        time: nowTime(),
-        type: "sleep",
-        label: "Sleep logged",
-        value: `${action.payload.hours} hrs, ${action.payload.quality}`,
-      }
-      const next = {
-        ...state,
-        sleepEntries: [...state.sleepEntries, action.payload],
-        timeline: [...state.timeline, event],
-      }
-      return { ...next, stabilityScore: recalcScore(next) }
-    }
-  }
+function getToken(): string | null {
+  if (typeof window === "undefined") return null
+  return localStorage.getItem("verazoi_token")
 }
 
 const AppDataContext = createContext<{
   state: AppState
-  dispatch: React.Dispatch<Action>
+  addGlucoseReading: (value: number, timing: "fasting" | "before" | "after") => Promise<void>
+  addMeal: (mealType: string, foods: string[], notes: string) => Promise<void>
+  addActivity: (activityType: string, duration: number, intensity: string) => Promise<void>
+  addSleep: (hours: number, quality: string) => Promise<void>
+  refresh: () => Promise<void>
 }>(null!)
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, setState] = useState<AppState>({
+    meals: [],
+    glucoseReadings: [],
+    activities: [],
+    sleepEntries: [],
+    timeline: [],
+    stabilityScore: 0,
+    spikeRisk: 0,
+    spikeFactors: [],
+    isLoading: true,
+  })
+
+  const refresh = useCallback(async () => {
+    const token = getToken()
+    if (!token) return
+
+    setState(prev => ({ ...prev, isLoading: true }))
+
+    try {
+      const [glucose, meals, activities, sleep, timeline, score] = await Promise.all([
+        api.listGlucose(token),
+        api.listMeals(token),
+        api.listActivities(token),
+        api.listSleep(token),
+        api.listTimeline(token),
+        api.getStabilityScore(token),
+      ])
+
+      setState({
+        glucoseReadings: glucose.map(r => ({
+          time: formatTime(r.recorded_at),
+          value: r.value,
+          timing: r.timing as "fasting" | "before" | "after",
+        })),
+        meals: meals.map(m => ({
+          time: formatTime(m.recorded_at),
+          mealType: m.meal_type,
+          foods: m.foods,
+          notes: m.notes,
+        })),
+        activities: activities.map(a => ({
+          time: formatTime(a.recorded_at),
+          activityType: a.activity_type,
+          duration: a.duration,
+          intensity: a.intensity,
+        })),
+        sleepEntries: sleep.map(s => ({
+          time: formatTime(s.recorded_at),
+          hours: s.hours,
+          quality: s.quality,
+        })),
+        timeline: timeline.map(e => ({
+          time: formatTime(e.recorded_at),
+          type: e.type as TimelineEvent["type"],
+          label: e.label,
+          value: e.value,
+        })),
+        stabilityScore: score.score,
+        spikeRisk: score.spike_risk,
+        spikeFactors: score.spike_factors,
+        isLoading: false,
+      })
+    } catch {
+      setState(prev => ({ ...prev, isLoading: false }))
+    }
+  }, [])
+
+  useEffect(() => { refresh() }, [refresh])
+
+  const addGlucoseReading = async (value: number, timing: "fasting" | "before" | "after") => {
+    const token = getToken()
+    if (!token) return
+    await api.createGlucose(token, value, timing)
+    await refresh()
+  }
+
+  const addMeal = async (mealType: string, foods: string[], notes: string) => {
+    const token = getToken()
+    if (!token) return
+    await api.createMeal(token, mealType, foods, notes)
+    await refresh()
+  }
+
+  const addActivity = async (activityType: string, duration: number, intensity: string) => {
+    const token = getToken()
+    if (!token) return
+    await api.createActivity(token, activityType, duration, intensity)
+    await refresh()
+  }
+
+  const addSleep = async (hours: number, quality: string) => {
+    const token = getToken()
+    if (!token) return
+    await api.createSleep(token, hours, quality)
+    await refresh()
+  }
+
   return (
-    <AppDataContext.Provider value={{ state, dispatch }}>
+    <AppDataContext.Provider value={{ state, addGlucoseReading, addMeal, addActivity, addSleep, refresh }}>
       {children}
     </AppDataContext.Provider>
   )

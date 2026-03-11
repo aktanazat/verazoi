@@ -37,7 +37,7 @@ export function Hero() {
                 : "pointer-events-none absolute inset-0 scale-50 opacity-0 blur-md"
           }`}
         >
-          <h1 className="font-serif text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1.05] tracking-tight">
+          <h1 className="font-serif text-[clamp(4rem,10vw,8rem)] font-light leading-[0.95] tracking-tight">
             <span className="text-gradient">This is metabolic</span>
             <br />
             <span className="italic text-foreground">intelligence.</span>

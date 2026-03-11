@@ -33,6 +33,14 @@ export function Footer() {
             </div>
             <div className="flex flex-col gap-3">
               <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/60">
+                Contact
+              </p>
+              <a href="mailto:contactverazoi@gmail.com" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">
+                contactverazoi@gmail.com
+              </a>
+            </div>
+            <div className="flex flex-col gap-3">
+              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/60">
                 Legal
               </p>
               <Link href="#" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">

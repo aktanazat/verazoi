@@ -14,16 +14,17 @@ function getTrend(value: number, prev: number): "up" | "down" | "stable" {
 }
 
 export default function GlucoseLogPage() {
-  const { state, dispatch } = useAppData()
+  const { state, addGlucoseReading } = useAppData()
   const [glucoseValue, setGlucoseValue] = useState("")
   const [timing, setTiming] = useState<"fasting" | "before" | "after">("fasting")
   const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
 
-  const nowStr = () => new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
-
-  const handleSave = () => {
-    if (!glucoseValue) return
-    dispatch({ type: "addGlucoseReading", payload: { time: nowStr(), value: Number(glucoseValue), timing } })
+  const handleSave = async () => {
+    if (!glucoseValue || saving) return
+    setSaving(true)
+    await addGlucoseReading(Number(glucoseValue), timing)
+    setSaving(false)
     setSaved(true)
     setTimeout(() => { setSaved(false); setGlucoseValue("") }, 2000)
   }
@@ -39,10 +40,10 @@ export default function GlucoseLogPage() {
       <div className="mb-5 flex justify-end">
         <button
           onClick={handleSave}
-          disabled={!glucoseValue}
+          disabled={!glucoseValue || saving}
           className="border border-foreground bg-foreground px-6 py-2 text-[12px] font-medium tracking-[0.04em] text-background transition-opacity hover:opacity-85 disabled:opacity-30"
         >
-          {saved ? "Saved" : "Save reading"}
+          {saved ? "Saved" : saving ? "..." : "Save reading"}
         </button>
       </div>
 
@@ -88,21 +89,28 @@ export default function GlucoseLogPage() {
             <p className="text-[12px] text-muted-foreground/80">{recentReadings.length} readings</p>
           </div>
           <div className="mt-4">
-            {recentReadings.map((r, i) => {
-              const Icon = trendIcon[r.trend]
-              return (
-                <div key={i} className="flex items-center justify-between border-b border-border py-3 last:border-0">
-                  <div className="flex items-center gap-4">
-                    <span className="text-[13px] text-muted-foreground">{r.time}</span>
-                    <span className="font-serif text-[20px] font-light text-foreground">{r.value}</span>
+            {recentReadings.length === 0 ? (
+              <div className="flex flex-col items-center py-8 text-center">
+                <p className="text-[13px] text-muted-foreground/60">No readings yet</p>
+                <p className="mt-1.5 text-[12px] text-muted-foreground/40">Add your first glucose reading above.</p>
+              </div>
+            ) : (
+              recentReadings.map((r, i) => {
+                const Icon = trendIcon[r.trend]
+                return (
+                  <div key={i} className="flex items-center justify-between border-b border-border py-3 last:border-0">
+                    <div className="flex items-center gap-4">
+                      <span className="text-[13px] text-muted-foreground">{r.time}</span>
+                      <span className="font-serif text-[20px] font-light text-foreground">{r.value}</span>
+                    </div>
+                    <Icon
+                      className={`h-4 w-4 ${r.trend === "up" ? "text-amber-600/70" : r.trend === "down" ? "text-emerald-700/60" : "text-muted-foreground/60"}`}
+                      strokeWidth={1.5}
+                    />
                   </div>
-                  <Icon
-                    className={`h-4 w-4 ${r.trend === "up" ? "text-amber-600/70" : r.trend === "down" ? "text-emerald-700/60" : "text-muted-foreground/60"}`}
-                    strokeWidth={1.5}
-                  />
-                </div>
-              )
-            })}
+                )
+              })
+            )}
           </div>
         </div>
       </div>

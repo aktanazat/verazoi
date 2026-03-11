@@ -10,17 +10,18 @@ const activityTypes = [
 const intensities = ["Light", "Moderate", "Intense"] as const
 
 export default function ActivityLogPage() {
-  const { state, dispatch } = useAppData()
+  const { state, addActivity } = useAppData()
   const [actType, setActType] = useState<string>("Walking")
   const [duration, setDuration] = useState("")
   const [intensity, setIntensity] = useState<string>("Moderate")
   const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
 
-  const nowStr = () => new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
-
-  const handleSave = () => {
-    if (!duration) return
-    dispatch({ type: "addActivity", payload: { time: nowStr(), activityType: actType, duration: Number(duration), intensity } })
+  const handleSave = async () => {
+    if (!duration || saving) return
+    setSaving(true)
+    await addActivity(actType, Number(duration), intensity)
+    setSaving(false)
     setSaved(true)
     setTimeout(() => { setSaved(false); setDuration("") }, 2000)
   }
@@ -30,10 +31,10 @@ export default function ActivityLogPage() {
       <div className="mb-5 flex justify-end">
         <button
           onClick={handleSave}
-          disabled={!duration}
+          disabled={!duration || saving}
           className="border border-foreground bg-foreground px-6 py-2 text-[12px] font-medium tracking-[0.04em] text-background transition-opacity hover:opacity-85 disabled:opacity-30"
         >
-          {saved ? "Saved" : "Save activity"}
+          {saved ? "Saved" : saving ? "..." : "Save activity"}
         </button>
       </div>
 
@@ -94,19 +95,26 @@ export default function ActivityLogPage() {
           <div className="flex items-center justify-between">
             <p className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">Recent activity</p>
             <p className="text-[12px] text-muted-foreground/80">
-              {state.activities.length + state.timeline.filter((e) => e.type === "activity").length} logged
+              {state.timeline.filter((e) => e.type === "activity").length} logged
             </p>
           </div>
           <div className="mt-4">
-            {state.timeline.filter((e) => e.type === "activity").map((e, i) => (
-              <div key={`seed-${i}`} className="flex items-center justify-between border-b border-border py-3 last:border-0">
-                <div>
-                  <p className="text-[13px] text-foreground">{e.label}</p>
-                  <p className="mt-0.5 text-[12px] text-muted-foreground">{e.value}</p>
-                </div>
-                <span className="text-[11px] text-muted-foreground/70">{e.time}</span>
+            {state.timeline.filter((e) => e.type === "activity").length === 0 ? (
+              <div className="flex flex-col items-center py-8 text-center">
+                <p className="text-[13px] text-muted-foreground/60">No activity logged</p>
+                <p className="mt-1.5 text-[12px] text-muted-foreground/40">Log a walk, run, or workout to track your movement.</p>
               </div>
-            ))}
+            ) : (
+              state.timeline.filter((e) => e.type === "activity").map((e, i) => (
+                <div key={i} className="flex items-center justify-between border-b border-border py-3 last:border-0">
+                  <div>
+                    <p className="text-[13px] text-foreground">{e.label}</p>
+                    <p className="mt-0.5 text-[12px] text-muted-foreground">{e.value}</p>
+                  </div>
+                  <span className="text-[11px] text-muted-foreground/70">{e.time}</span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

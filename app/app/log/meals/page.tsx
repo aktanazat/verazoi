@@ -13,14 +13,13 @@ const quickFoods = [
 ]
 
 export default function MealsLogPage() {
-  const { dispatch } = useAppData()
+  const { addMeal } = useAppData()
   const [mealType, setMealType] = useState<MealType>("Breakfast")
   const [selected, setSelected] = useState<string[]>([])
   const [custom, setCustom] = useState("")
   const [notes, setNotes] = useState("")
   const [saved, setSaved] = useState(false)
-
-  const nowStr = () => new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
+  const [saving, setSaving] = useState(false)
 
   const toggleFood = (food: string) => {
     setSelected((prev) => prev.includes(food) ? prev.filter((f) => f !== food) : [...prev, food])
@@ -33,9 +32,11 @@ export default function MealsLogPage() {
     }
   }
 
-  const handleSave = () => {
-    if (selected.length === 0) return
-    dispatch({ type: "addMeal", payload: { time: nowStr(), mealType, foods: selected, notes } })
+  const handleSave = async () => {
+    if (selected.length === 0 || saving) return
+    setSaving(true)
+    await addMeal(mealType, selected, notes)
+    setSaving(false)
     setSaved(true)
     setTimeout(() => { setSaved(false); setSelected([]); setNotes("") }, 2000)
   }
@@ -45,10 +46,10 @@ export default function MealsLogPage() {
       <div className="mb-5 flex justify-end">
         <button
           onClick={handleSave}
-          disabled={selected.length === 0}
+          disabled={selected.length === 0 || saving}
           className="border border-foreground bg-foreground px-6 py-2 text-[12px] font-medium tracking-[0.04em] text-background transition-opacity hover:opacity-85 disabled:opacity-30"
         >
-          {saved ? "Saved" : "Save meal"}
+          {saved ? "Saved" : saving ? "..." : "Save meal"}
         </button>
       </div>
 

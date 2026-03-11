@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Menu, X } from "lucide-react"
 
 const links = [
@@ -52,7 +53,8 @@ export function Navbar() {
       }`}
     >
       <nav className="relative mx-auto flex max-w-screen-lg items-center justify-between px-6 py-5">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image src="/icon.svg" alt="Verazoi" width={28} height={28} className="h-7 w-7" />
           <span className="font-serif text-[22px] font-light tracking-wide text-foreground">
             Verazoi
           </span>
