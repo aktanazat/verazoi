@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     rate_limit_public: int = 100
     rate_limit_authenticated: int = 300
 
+    anthropic_api_key: str = ""
+
     cors_origins: str = "http://localhost:3000,http://localhost:8000,https://aktanazat.github.io"
 
     env: str = "development"

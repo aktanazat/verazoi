@@ -1,12 +1,18 @@
-# v0 runtime files (should only exist in preview, not in git)
-__v0_runtime_loader.js
-__v0_devtools.tsx
-__v0_jsx-dev-runtime.ts
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/*.tsbuildinfo
+frontend/_frames/
 
-# Common ignores
-node_modules/
-.next/
-out/
+# Backend
+backend/.venv/
+backend/__pycache__/
+
+# iOS
+ios/**/*.xcuserdata
+
+# Common
 .env*.local
 .DS_Store
-*.tsbuildinfo
+.claude/

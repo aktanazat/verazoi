@@ -6,7 +6,7 @@ from app.config import settings
 from app.database import get_pool, close_pool
 from app.redis_client import get_redis, close_redis
 from app.middleware.rate_limit import RateLimitMiddleware
-from app.routes import auth, glucose, meals, activity, sleep, timeline, stability, sync
+from app.routes import auth, glucose, meals, activity, sleep, timeline, stability, sync, medications, goals, trends, correlations, insights, export
 
 
 @asynccontextmanager
@@ -41,6 +41,12 @@ app.include_router(sleep.router, prefix=prefix)
 app.include_router(timeline.router, prefix=prefix)
 app.include_router(stability.router, prefix=prefix)
 app.include_router(sync.router, prefix=prefix)
+app.include_router(medications.router, prefix=prefix)
+app.include_router(goals.router, prefix=prefix)
+app.include_router(trends.router, prefix=prefix)
+app.include_router(correlations.router, prefix=prefix)
+app.include_router(insights.router, prefix=prefix)
+app.include_router(export.router, prefix=prefix)
 
 
 @app.get("/health")

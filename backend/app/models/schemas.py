@@ -115,3 +115,86 @@ class WearableSyncRequest(BaseModel):
     active_minutes: int | None = None
     sleep_hours: float | None = None
     sleep_quality: str | None = None
+
+
+# ── Medications ──
+
+class MedicationCreate(BaseModel):
+    name: str
+    dose_value: float
+    dose_unit: str = Field(pattern=r"^(units|mg)$")
+    timing: str = Field(pattern=r"^(before_meal|with_meal|after_meal|bedtime|morning|other)$")
+    notes: str = ""
+
+
+class MedicationResponse(BaseModel):
+    id: str
+    name: str
+    dose_value: float
+    dose_unit: str
+    timing: str
+    notes: str
+    recorded_at: datetime
+
+
+# ── Goals ──
+
+class GoalsUpsert(BaseModel):
+    glucose_low: int = 70
+    glucose_high: int = 140
+    daily_steps: int = 10000
+    sleep_hours: float = 8
+
+
+class GoalsResponse(GoalsUpsert):
+    id: str
+
+
+class GoalProgress(BaseModel):
+    glucose_in_range_pct: float
+    steps_today: int
+    steps_target: int
+    sleep_last: float
+    sleep_target: float
+
+
+# ── Trends ──
+
+class GlucoseTrendPoint(BaseModel):
+    date: str
+    avg: float
+    min: int
+    max: int
+    count: int
+
+
+class StabilityTrendPoint(BaseModel):
+    date: str
+    score: int
+
+
+# ── Correlations ──
+
+class MealGlucoseCorrelation(BaseModel):
+    meal_id: str
+    meal_type: str
+    foods: list[str]
+    recorded_at: datetime
+    pre_meal_glucose: int | None
+    peak_glucose: int | None
+    glucose_delta: int | None
+
+
+class FoodImpact(BaseModel):
+    food: str
+    avg_delta: float
+    occurrences: int
+
+
+# ── Insights ──
+
+class InsightResponse(BaseModel):
+    id: str
+    week_start: str
+    summary: str
+    generated_at: datetime

@@ -29,3 +29,27 @@ async def sync_wearable(
         pass
 
     return {"status": "synced"}
+
+
+@router.get("/wearable")
+async def get_wearable(
+    user_id: str = Depends(get_current_user),
+    db: asyncpg.Connection = Depends(get_db),
+):
+    row = await db.fetchrow(
+        """SELECT heart_rate, steps, active_minutes, sleep_hours, sleep_quality, recorded_at
+           FROM wearable_data WHERE user_id = $1::uuid
+           ORDER BY recorded_at DESC LIMIT 1""",
+        user_id,
+    )
+    if not row:
+        return {"connected": False}
+    return {
+        "connected": True,
+        "heart_rate": row["heart_rate"],
+        "steps": row["steps"],
+        "active_minutes": row["active_minutes"],
+        "sleep_hours": row["sleep_hours"],
+        "sleep_quality": row["sleep_quality"],
+        "last_sync": row["recorded_at"].isoformat(),
+    }

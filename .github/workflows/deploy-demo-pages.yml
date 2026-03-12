@@ -32,6 +32,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -40,14 +41,18 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        working-directory: frontend
 
       - name: Build static site
         run: pnpm build
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.API_URL }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: out
+          path: frontend/out
 
   deploy:
     needs: build
