@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import * as api from "@/lib/api"
+import { basePath } from "@/lib/utils"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -35,7 +36,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center px-6">
       <div className="w-full max-w-[320px]">
-        <Image src="/images/verazoi_logo_top.svg" alt="Verazoi" width={420} height={140} className="h-auto w-[180px]" />
+        <Image src={`${basePath}/images/verazoi_logo_top.svg`} alt="Verazoi" width={420} height={140} className="h-auto w-[180px]" />
         <p className="mt-4 text-[13px] text-muted-foreground">
           {mode === "login" ? "Sign in to your account" : "Create your account"}
         </p>

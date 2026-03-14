@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { BarChart3, ClipboardPen } from "lucide-react"
+import { basePath } from "@/lib/utils"
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +26,7 @@ export function AppSidebar() {
     <Sidebar className="hidden md:flex">
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/images/verazoilogo.svg" alt="Verazoi" width={764} height={536} className="h-[22px] w-auto" />
+          <Image src={`${basePath}/images/verazoilogo.svg`} alt="Verazoi" width={764} height={536} className="h-[22px] w-auto" />
           <span className="font-serif text-[18px] font-light text-foreground">Verazoi</span>
           <span className="text-[11px] tracking-[0.1em] text-muted-foreground">Demo</span>
         </Link>

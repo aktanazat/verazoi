@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
+import { basePath } from "@/lib/utils"
 
 export function Footer() {
   return (
@@ -12,7 +13,7 @@ export function Footer() {
         <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
           <div>
             <Link href="/">
-              <Image src="/images/verazoi_logo_bottom.svg" alt="Verazoi - Rooted in truth. Designed for life." width={600} height={150} className="h-auto w-[180px]" />
+              <Image src={`${basePath}/images/verazoi_logo_bottom.svg`} alt="Verazoi - Rooted in truth. Designed for life." width={600} height={150} className="h-auto w-[180px]" />
             </Link>
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-muted-foreground">
               Predictive metabolic intelligence for CGM-using adults. Structured

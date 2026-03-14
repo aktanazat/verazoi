@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { BarChart3, ClipboardPen } from "lucide-react"
+import { basePath } from "@/lib/utils"
 
 const tabs = [
   { label: "Dashboard", href: "/app/dashboard", icon: BarChart3 },
@@ -50,7 +51,7 @@ export function AppNav() {
       <header className="border-b border-border px-5 py-4 md:hidden">
         <div className="mx-auto flex max-w-md items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/images/verazoilogo.svg" alt="Verazoi" width={764} height={536} className="h-[22px] w-auto" />
+            <Image src={`${basePath}/images/verazoilogo.svg`} alt="Verazoi" width={764} height={536} className="h-[22px] w-auto" />
             <span className="font-serif text-[18px] font-light text-foreground">Verazoi</span>
           </Link>
           <span className="text-[12px] text-muted-foreground">

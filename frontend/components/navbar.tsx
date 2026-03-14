@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Menu, X } from "lucide-react"
+import { basePath } from "@/lib/utils"
 
 const links = [
   { label: "Overview", href: "#overview" },
@@ -54,7 +55,7 @@ export function Navbar() {
     >
       <nav className="relative mx-auto flex max-w-screen-lg items-center justify-between px-6 py-5">
         <Link href="/">
-          <Image src="/images/verazoilogo.svg" alt="Verazoi" width={764} height={536} className="h-7 w-auto" />
+          <Image src={`${basePath}/images/verazoilogo.svg`} alt="Verazoi" width={764} height={536} className="h-7 w-auto" />
         </Link>
 
         <div className="pointer-events-none absolute inset-x-0 hidden justify-center md:flex">

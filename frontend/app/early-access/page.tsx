@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
+import { basePath } from "@/lib/utils"
 
 export default function EarlyAccessPage() {
   const [email, setEmail] = useState("")
@@ -25,7 +26,7 @@ export default function EarlyAccessPage() {
         </Link>
 
         <div className="mt-8 flex justify-center">
-          <Image src="/images/verazoi_logo_top.svg" alt="Verazoi" width={420} height={140} className="h-auto w-[140px]" />
+          <Image src={`${basePath}/images/verazoi_logo_top.svg`} alt="Verazoi" width={420} height={140} className="h-auto w-[140px]" />
         </div>
 
         <h1 className="mt-12 font-serif text-[clamp(1.75rem,3.5vw,3rem)] font-light leading-[1.1] text-balance">

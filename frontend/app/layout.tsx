@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: 'Verazoi | Predictive Metabolic Intelligence for CGM Users',
   description: 'Verazoi combines your CGM trends and lifestyle patterns to generate a personalized Stability Score and shows which small changes could improve it.',
   icons: {
-    icon: '/images/verazoilogo.svg',
+    icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/images/verazoilogo.svg`,
   },
 }
 

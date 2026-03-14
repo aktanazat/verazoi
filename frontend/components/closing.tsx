@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import { basePath } from "@/lib/utils"
 
 export function Closing() {
   const { ref, visible } = useScrollReveal(0.2)
@@ -22,7 +23,7 @@ export function Closing() {
             visible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
           }`}
         >
-          <Image src="/images/verazoi_logo_bottom.svg" alt="Verazoi - Rooted in truth. Designed for life." width={600} height={150} className="h-auto w-[260px] md:w-[320px]" />
+          <Image src={`${basePath}/images/verazoi_logo_bottom.svg`} alt="Verazoi - Rooted in truth. Designed for life." width={600} height={150} className="h-auto w-[260px] md:w-[320px]" />
         </div>
 
         <div

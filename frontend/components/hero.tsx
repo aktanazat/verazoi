@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowDown } from "lucide-react"
+import { basePath } from "@/lib/utils"
 
 export function Hero() {
   const [phase, setPhase] = useState<"intro" | "shrink" | "brand">("intro")
@@ -54,7 +55,7 @@ export function Hero() {
           }`}
         >
           <div>
-            <Image src="/images/verazoi_logo_top.svg" alt="Verazoi" width={420} height={140} className="mx-auto block h-auto w-[280px] md:w-[320px]" />
+            <Image src={`${basePath}/images/verazoi_logo_top.svg`} alt="Verazoi" width={420} height={140} className="mx-auto block h-auto w-[280px] md:w-[320px]" />
           </div>
           <div className="mx-auto mt-4 h-[2px] w-16 rounded-full bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
 
