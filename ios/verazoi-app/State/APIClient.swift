@@ -13,7 +13,7 @@ actor APIClient {
     #if DEBUG
     private let baseURL = "http://localhost:8000/api/v1"
     #else
-    private let baseURL = "https://api.verazoi.com/api/v1"
+    private let baseURL = "https://verazoi-api.onrender.com/api/v1"
     #endif
 
     private var token: String?
