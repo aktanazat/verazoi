@@ -6,6 +6,8 @@ enum LogTab: String, CaseIterable {
     case activity = "Activity"
     case sleep = "Sleep"
     case medications = "Meds"
+    case fasting = "Fasting"
+    case experiments = "A/B Test"
 }
 
 struct LogTabView: View {
@@ -40,6 +42,8 @@ struct LogTabView: View {
             case .activity: ActivityLogView()
             case .sleep: SleepLogView()
             case .medications: MedicationLogView()
+            case .fasting: FastingView()
+            case .experiments: ExperimentsView()
             }
         }
         .background(Color.vBackground)

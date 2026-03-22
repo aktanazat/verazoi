@@ -38,6 +38,19 @@ final class AppState {
         let result = StabilityAlgorithm.calculate(input: input)
         stabilityScore = result.score
         stabilityResult = result
+
+        NotificationManager.shared.checkAndNotifySpike(risk: result.spikeRisk)
+        updateWidgetData()
+    }
+
+    private func updateWidgetData() {
+        let defaults = UserDefaults(suiteName: "group.verazoi.app")
+        defaults?.set(stabilityScore, forKey: "widget_stability_score")
+        defaults?.set(Int((stabilityResult?.spikeRisk ?? 0) * 100), forKey: "widget_spike_risk")
+        if let last = glucoseReadings.last {
+            defaults?.set(last.value, forKey: "widget_last_glucose")
+            defaults?.set(last.time, forKey: "widget_last_glucose_time")
+        }
     }
 
     func addGlucoseReading(value: Int, timing: GlucoseTiming) {

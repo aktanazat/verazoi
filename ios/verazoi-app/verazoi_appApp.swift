@@ -5,6 +5,9 @@ struct verazoi_appApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task {
+                    await NotificationManager.shared.requestAuthorization()
+                }
         }
     }
 }

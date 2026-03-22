@@ -256,6 +256,116 @@ export function getInsightHistory(limit = 10) {
   return request<InsightResponse[]>(`/insights/history?limit=${limit}`)
 }
 
+// ── CGM ──
+
+export function connectCGM(provider: string, username: string, password: string) {
+  return request<{ status: string }>("/cgm/connect", { method: "POST", body: { provider, username, password } })
+}
+
+export function syncCGM() {
+  return request<{ status: string; readings_imported: number }>("/cgm/sync", { method: "POST" })
+}
+
+export type CGMStatus = { provider: string; active: boolean; last_sync: string | null }
+
+export function getCGMStatus() {
+  return request<CGMStatus[]>("/cgm/status")
+}
+
+export function disconnectCGM() {
+  return request<{ status: string }>("/cgm/disconnect", { method: "DELETE" })
+}
+
+// ── Meal Photo Recognition ──
+
+export async function recognizeFood(file: File): Promise<string[]> {
+  const formData = new FormData()
+  formData.append("photo", file)
+
+  const headers: Record<string, string> = {}
+  if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`
+
+  const res = await fetch(`${API_BASE}/meals/recognize-photo`, {
+    method: "POST",
+    headers,
+    body: formData,
+    credentials: "include",
+  })
+  if (!res.ok) throw new Error("Recognition failed")
+  const data = await res.json()
+  return data.foods
+}
+
+// ── Pre-meal Playbook ──
+
+export type PlaybookEntry = { food: string; avg_delta: number; occurrences: number; suggestion: string | null }
+
+export function getPlaybook(foods: string[]) {
+  return request<PlaybookEntry[]>(`/meals/playbook?foods=${foods.join(",")}`)
+}
+
+// ── Experiments ──
+
+export type Experiment = { id: string; name: string; food_a: string; food_b: string; status: string; created_at: string }
+export type ExperimentEntry = { id: string; arm: string; pre_glucose: number; peak_glucose: number; glucose_delta: number; recorded_at: string }
+export type ExperimentComparison = { experiment: Experiment; arm_a: ExperimentEntry[]; arm_b: ExperimentEntry[]; avg_delta_a: number | null; avg_delta_b: number | null }
+
+export function createExperiment(name: string, food_a: string, food_b: string) {
+  return request<Experiment>("/experiments", { method: "POST", body: { name, food_a, food_b } })
+}
+
+export function listExperiments() {
+  return request<Experiment[]>("/experiments")
+}
+
+export function getExperiment(id: string) {
+  return request<ExperimentComparison>(`/experiments/${id}`)
+}
+
+export function addExperimentEntry(experimentId: string, arm: string, pre_glucose: number, peak_glucose: number) {
+  return request<ExperimentEntry>(`/experiments/${experimentId}/entries`, { method: "POST", body: { arm, pre_glucose, peak_glucose } })
+}
+
+export function completeExperiment(id: string) {
+  return request<{ status: string }>(`/experiments/${id}/complete`, { method: "POST" })
+}
+
+// ── Fasting ──
+
+export type FastingSession = { id: string; started_at: string; ended_at: string | null; target_hours: number | null; elapsed_hours: number }
+
+export function startFast(target_hours?: number) {
+  return request<FastingSession>("/fasting/start", { method: "POST", body: { target_hours } })
+}
+
+export function endFast() {
+  return request<FastingSession>("/fasting/end", { method: "POST" })
+}
+
+export function getActiveFast() {
+  return request<FastingSession & { active?: boolean }>("/fasting/active")
+}
+
+export function fastingHistory(limit = 10) {
+  return request<FastingSession[]>(`/fasting/history?limit=${limit}`)
+}
+
+// ── Medication Schedules ──
+
+export type MedSchedule = { id: string; medication_name: string; dose_value: number; dose_unit: string; schedule_time: string; days_of_week: number[]; active: boolean }
+
+export function createMedSchedule(medication_name: string, dose_value: number, dose_unit: string, schedule_time: string, days_of_week: number[]) {
+  return request<MedSchedule>("/medication-schedules", { method: "POST", body: { medication_name, dose_value, dose_unit, schedule_time, days_of_week } })
+}
+
+export function listMedSchedules() {
+  return request<MedSchedule[]>("/medication-schedules")
+}
+
+export function deleteMedSchedule(id: string) {
+  return request<{ status: string }>(`/medication-schedules/${id}`, { method: "DELETE" })
+}
+
 // ── Export ──
 
 export async function exportCSV(fromDate?: string, toDate?: string) {

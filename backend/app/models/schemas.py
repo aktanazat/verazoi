@@ -212,3 +212,107 @@ class InsightResponse(BaseModel):
     week_start: str
     summary: str
     generated_at: datetime
+
+
+# ── CGM ──
+
+class CGMConnectRequest(BaseModel):
+    provider: str = Field(pattern=r"^(dexcom|libre)$")
+    username: str
+    password: str
+
+
+class CGMStatusResponse(BaseModel):
+    provider: str
+    active: bool
+    last_sync: datetime | None
+
+
+# ── Meal Photo Recognition ──
+
+class FoodRecognitionResponse(BaseModel):
+    foods: list[str]
+
+
+# ── Pre-meal Playbook ──
+
+class PlaybookEntry(BaseModel):
+    food: str
+    avg_delta: float
+    occurrences: int
+    suggestion: str | None = None
+
+
+# ── Experiments ──
+
+class ExperimentCreate(BaseModel):
+    name: str
+    food_a: str
+    food_b: str
+
+
+class ExperimentResponse(BaseModel):
+    id: str
+    name: str
+    food_a: str
+    food_b: str
+    status: str
+    created_at: datetime
+
+
+class ExperimentEntryCreate(BaseModel):
+    arm: str = Field(pattern=r"^(a|b)$")
+    pre_glucose: int = Field(ge=20, le=500)
+    peak_glucose: int = Field(ge=20, le=500)
+
+
+class ExperimentEntryResponse(BaseModel):
+    id: str
+    arm: str
+    pre_glucose: int
+    peak_glucose: int
+    glucose_delta: int
+    recorded_at: datetime
+
+
+class ExperimentComparison(BaseModel):
+    experiment: ExperimentResponse
+    arm_a: list[ExperimentEntryResponse]
+    arm_b: list[ExperimentEntryResponse]
+    avg_delta_a: float | None
+    avg_delta_b: float | None
+
+
+# ── Fasting ──
+
+class FastingStartRequest(BaseModel):
+    target_hours: float | None = None
+
+
+class FastingSessionResponse(BaseModel):
+    id: str
+    started_at: datetime
+    ended_at: datetime | None
+    target_hours: float | None
+    elapsed_hours: float
+    glucose_readings: list[GlucoseResponse] = []
+
+
+# ── Medication Schedules ──
+
+class MedScheduleCreate(BaseModel):
+    medication_name: str
+    dose_value: float
+    dose_unit: str = Field(pattern=r"^(units|mg)$")
+    schedule_time: str
+    days_of_week: list[int] = [0, 1, 2, 3, 4, 5, 6]
+
+
+class MedScheduleResponse(BaseModel):
+    id: str
+    medication_name: str
+    dose_value: float
+    dose_unit: str
+    schedule_time: str
+    days_of_week: list[int]
+    active: bool

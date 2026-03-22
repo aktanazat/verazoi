@@ -6,7 +6,21 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		775DE12C7A05EB080DCD976C /* VerazoiWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A88D75620B010B947D736B8 /* VerazoiWidget.swift */; };
+		86FB5DE43137EDFAD205F1B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6147847495CA3DA0CF66C08D /* Assets.xcassets */; };
+		D1AA721ABD6212B6533232A6 /* verazoi-widget.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 15E1B934FCF074D66151305E /* verazoi-widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D78BF1EF28B1325FE97F9F07 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1220143E40D6F7BCFE3BF7CA /* Foundation.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		87EF2A734326FF1FAD2449E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 888BC1722F60EDB60071082C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED4C8A9056FF7AF083640236;
+			remoteInfo = "verazoi-widget";
+		};
 		888BC1882F60EDB70071082C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 888BC1722F60EDB60071082C /* Project object */;
@@ -23,7 +37,25 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		07B5C2C21D5776E176D77377 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				D1AA721ABD6212B6533232A6 /* verazoi-widget.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1220143E40D6F7BCFE3BF7CA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		15E1B934FCF074D66151305E /* verazoi-widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "verazoi-widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A88D75620B010B947D736B8 /* VerazoiWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VerazoiWidget.swift; path = VerazoiWidget.swift; sourceTree = "<group>"; };
+		6147847495CA3DA0CF66C08D /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
 		888BC17A2F60EDB60071082C /* verazoi-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "verazoi-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		888BC1872F60EDB70071082C /* verazoi-appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "verazoi-appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		888BC1912F60EDB70071082C /* verazoi-appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "verazoi-appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -32,16 +64,22 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		888BC17C2F60EDB60071082C /* verazoi-app */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "verazoi-app";
 			sourceTree = "<group>";
 		};
 		888BC18A2F60EDB70071082C /* verazoi-appTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "verazoi-appTests";
 			sourceTree = "<group>";
 		};
 		888BC1942F60EDB70071082C /* verazoi-appUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "verazoi-appUITests";
 			sourceTree = "<group>";
 		};
@@ -69,9 +107,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C1FB0897567993B9EBB74061 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D78BF1EF28B1325FE97F9F07 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4BFE0FB3716FA6481D0B32BF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F54BCDD89EFEAEA0197BC254 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		888BC1712F60EDB60071082C = {
 			isa = PBXGroup;
 			children = (
@@ -79,6 +133,8 @@
 				888BC18A2F60EDB70071082C /* verazoi-appTests */,
 				888BC1942F60EDB70071082C /* verazoi-appUITests */,
 				888BC17B2F60EDB60071082C /* Products */,
+				8D875EA7958C28778F7F31D9 /* verazoi-widget */,
+				4BFE0FB3716FA6481D0B32BF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -88,8 +144,27 @@
 				888BC17A2F60EDB60071082C /* verazoi-app.app */,
 				888BC1872F60EDB70071082C /* verazoi-appTests.xctest */,
 				888BC1912F60EDB70071082C /* verazoi-appUITests.xctest */,
+				15E1B934FCF074D66151305E /* verazoi-widget.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8D875EA7958C28778F7F31D9 /* verazoi-widget */ = {
+			isa = PBXGroup;
+			children = (
+				1A88D75620B010B947D736B8 /* VerazoiWidget.swift */,
+				6147847495CA3DA0CF66C08D /* Assets.xcassets */,
+			);
+			name = "verazoi-widget";
+			path = "verazoi-widget";
+			sourceTree = "<group>";
+		};
+		F54BCDD89EFEAEA0197BC254 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				1220143E40D6F7BCFE3BF7CA /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,17 +177,17 @@
 				888BC1762F60EDB60071082C /* Sources */,
 				888BC1772F60EDB60071082C /* Frameworks */,
 				888BC1782F60EDB60071082C /* Resources */,
+				07B5C2C21D5776E176D77377 /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				90B6AEC150642401684B73F7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				888BC17C2F60EDB60071082C /* verazoi-app */,
 			);
 			name = "verazoi-app";
-			packageProductDependencies = (
-			);
 			productName = "verazoi-app";
 			productReference = 888BC17A2F60EDB60071082C /* verazoi-app.app */;
 			productType = "com.apple.product-type.application";
@@ -134,8 +209,6 @@
 				888BC18A2F60EDB70071082C /* verazoi-appTests */,
 			);
 			name = "verazoi-appTests";
-			packageProductDependencies = (
-			);
 			productName = "verazoi-appTests";
 			productReference = 888BC1872F60EDB70071082C /* verazoi-appTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -157,11 +230,26 @@
 				888BC1942F60EDB70071082C /* verazoi-appUITests */,
 			);
 			name = "verazoi-appUITests";
-			packageProductDependencies = (
-			);
 			productName = "verazoi-appUITests";
 			productReference = 888BC1912F60EDB70071082C /* verazoi-appUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		ED4C8A9056FF7AF083640236 /* verazoi-widget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43302BC2180E29AF1100B489 /* Build configuration list for PBXNativeTarget "verazoi-widget" */;
+			buildPhases = (
+				71690AB6793C0F51CBB2A6A0 /* Sources */,
+				C1FB0897567993B9EBB74061 /* Frameworks */,
+				6C2EC0B90BE07B96FEF3E0F7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "verazoi-widget";
+			productName = "verazoi-widget";
+			productReference = 15E1B934FCF074D66151305E /* verazoi-widget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -203,11 +291,20 @@
 				888BC1792F60EDB60071082C /* verazoi-app */,
 				888BC1862F60EDB70071082C /* verazoi-appTests */,
 				888BC1902F60EDB70071082C /* verazoi-appUITests */,
+				ED4C8A9056FF7AF083640236 /* verazoi-widget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6C2EC0B90BE07B96FEF3E0F7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				86FB5DE43137EDFAD205F1B3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		888BC1782F60EDB60071082C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -232,6 +329,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		71690AB6793C0F51CBB2A6A0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				775DE12C7A05EB080DCD976C /* VerazoiWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		888BC1762F60EDB60071082C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -266,9 +371,58 @@
 			target = 888BC1792F60EDB60071082C /* verazoi-app */;
 			targetProxy = 888BC1922F60EDB70071082C /* PBXContainerItemProxy */;
 		};
+		90B6AEC150642401684B73F7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "verazoi-widget";
+			target = ED4C8A9056FF7AF083640236 /* verazoi-widget */;
+			targetProxy = 87EF2A734326FF1FAD2449E2 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		483EAA64B40F1CC7126A7E50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "verazoi-widget/verazoi-widget.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AAVB324H37;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "verazoi-widget/Info.plist";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "verazoi.verazoi-app.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6BFF462E5E7E8B8D24F5FB60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "verazoi-widget/verazoi-widget.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AAVB324H37;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "verazoi-widget/Info.plist";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "verazoi.verazoi-app.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		888BC1992F60EDB70071082C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -403,6 +557,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Verazoi reads your heart rate, step count, exercise time, and sleep data from Apple Health to calculate your metabolic stability score and provide personalized insights.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Verazoi does not write data to Apple Health.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -438,6 +593,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Verazoi reads your heart rate, step count, exercise time, and sleep data from Apple Health to calculate your metabolic stability score and provide personalized insights.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Verazoi does not write data to Apple Health.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -547,6 +703,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		43302BC2180E29AF1100B489 /* Build configuration list for PBXNativeTarget "verazoi-widget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6BFF462E5E7E8B8D24F5FB60 /* Release */,
+				483EAA64B40F1CC7126A7E50 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		888BC1752F60EDB60071082C /* Build configuration list for PBXProject "verazoi-app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

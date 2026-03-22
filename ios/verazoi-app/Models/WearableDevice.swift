@@ -1,6 +1,6 @@
 import Foundation
 
-enum WearableProvider: String, CaseIterable, Identifiable {
+enum WearableProvider: String, CaseIterable, Identifiable, Codable {
     case appleWatch = "Apple Watch"
     case garmin = "Garmin"
     case samsung = "Samsung Galaxy Watch"
@@ -17,9 +17,9 @@ enum WearableProvider: String, CaseIterable, Identifiable {
 
     var description: String {
         switch self {
-        case .appleWatch: "Syncs heart rate, steps, workouts, and sleep via HealthKit."
-        case .garmin: "Syncs activity, sleep, heart rate, and stress via Garmin Connect."
-        case .samsung: "Syncs activity, sleep, and heart rate via Samsung Health."
+        case .appleWatch: "Reads heart rate, steps, workouts, and sleep directly from Apple Health."
+        case .garmin: "Reads data synced from Garmin Connect to Apple Health."
+        case .samsung: "Reads data synced from Samsung Health to Apple Health."
         }
     }
 
@@ -28,9 +28,17 @@ enum WearableProvider: String, CaseIterable, Identifiable {
         case .appleWatch:
             return [.heartRate, .steps, .workouts, .sleep, .restingEnergy, .activeEnergy]
         case .garmin:
-            return [.heartRate, .steps, .workouts, .sleep, .stress, .bodyBattery]
+            return [.heartRate, .steps, .workouts, .sleep]
         case .samsung:
-            return [.heartRate, .steps, .workouts, .sleep, .stress]
+            return [.heartRate, .steps, .workouts, .sleep]
+        }
+    }
+
+    var setupHint: String? {
+        switch self {
+        case .appleWatch: nil
+        case .garmin: "Make sure Garmin Connect is syncing to Apple Health in Garmin Connect > Settings > Health."
+        case .samsung: "Make sure Samsung Health is syncing to Apple Health in Samsung Health > Settings."
         }
     }
 }
@@ -42,8 +50,6 @@ enum SyncCapability: String {
     case sleep = "Sleep"
     case restingEnergy = "Resting Energy"
     case activeEnergy = "Active Energy"
-    case stress = "Stress"
-    case bodyBattery = "Body Battery"
 }
 
 enum ConnectionStatus: String {

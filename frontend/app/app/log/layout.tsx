@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Droplets, Utensils, Footprints, Moon, Pill } from "lucide-react"
+import { Droplets, Utensils, Footprints, Moon, Pill, Timer, FlaskConical } from "lucide-react"
 
 const tabItems = [
   { key: "glucose", label: "Glucose", icon: Droplets, href: "/app/log/glucose" },
@@ -10,6 +10,8 @@ const tabItems = [
   { key: "activity", label: "Activity", icon: Footprints, href: "/app/log/activity" },
   { key: "sleep", label: "Sleep", icon: Moon, href: "/app/log/sleep" },
   { key: "medications", label: "Meds", icon: Pill, href: "/app/log/medications" },
+  { key: "fasting", label: "Fasting", icon: Timer, href: "/app/log/fasting" },
+  { key: "experiments", label: "A/B", icon: FlaskConical, href: "/app/log/experiments" },
 ]
 
 export default function LogLayout({ children }: { children: React.ReactNode }) {

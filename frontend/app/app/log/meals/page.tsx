@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { Plus, X } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Plus, X, Camera } from "lucide-react"
 import { useAppData } from "@/contexts/app-data-context"
+import * as api from "@/lib/api"
 
 const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"] as const
 type MealType = (typeof mealTypes)[number]
@@ -20,6 +21,13 @@ export default function MealsLogPage() {
   const [notes, setNotes] = useState("")
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [recognizing, setRecognizing] = useState(false)
+  const [playbook, setPlaybook] = useState<api.PlaybookEntry[]>([])
+
+  useEffect(() => {
+    if (selected.length === 0) { setPlaybook([]); return }
+    api.getPlaybook(selected).then(setPlaybook).catch(() => setPlaybook([]))
+  }, [selected])
 
   const toggleFood = (food: string) => {
     setSelected((prev) => prev.includes(food) ? prev.filter((f) => f !== food) : [...prev, food])
@@ -101,7 +109,52 @@ export default function MealsLogPage() {
               <button onClick={addCustom} className="border border-border px-3 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground">
                 <Plus className="h-4 w-4" />
               </button>
+              <label className="flex cursor-pointer items-center border border-border px-3 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground">
+                <Camera className="h-4 w-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  disabled={recognizing}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0]
+                    if (!file) return
+                    setRecognizing(true)
+                    const foods = await api.recognizeFood(file).catch(() => [])
+                    for (const food of foods) {
+                      if (!selected.includes(food)) setSelected((prev) => [...prev, food])
+                    }
+                    setRecognizing(false)
+                    e.target.value = ""
+                  }}
+                />
+              </label>
             </div>
+            {recognizing && (
+              <p className="mt-2 text-[11px] text-muted-foreground">Recognizing foods...</p>
+            )}
+
+            {playbook.length > 0 && (
+              <div className="mt-5">
+                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/60">Your data for these foods</p>
+                <div className="mt-3">
+                  {playbook.map((entry) => (
+                    <div key={entry.food} className="border-b border-border py-2.5 last:border-0">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[13px] text-foreground">{entry.food}</span>
+                        <span className={`font-mono text-[12px] ${entry.avg_delta > 20 ? "text-amber-700" : "text-muted-foreground"}`}>
+                          {entry.avg_delta > 0 ? "+" : ""}{Math.round(entry.avg_delta)} mg/dL
+                        </span>
+                      </div>
+                      {entry.suggestion && (
+                        <p className="mt-1 text-[11px] text-muted-foreground/70">{entry.suggestion}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

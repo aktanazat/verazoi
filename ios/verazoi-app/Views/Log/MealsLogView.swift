@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 private let mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"]
 
@@ -14,6 +15,9 @@ struct MealsLogView: View {
     @State private var custom = ""
     @State private var notes = ""
     @State private var saved = false
+    @State private var photoItem: PhotosPickerItem?
+    @State private var recognizing = false
+    @State private var playbook: [(food: String, delta: Double, suggestion: String?)] = []
 
     var body: some View {
         ScrollView {
@@ -95,8 +99,50 @@ struct MealsLogView: View {
                                                 .stroke(Color.vBorder, lineWidth: 0.5)
                                         )
                                 }
+
+                                PhotosPicker(selection: $photoItem, matching: .images) {
+                                    Image(systemName: recognizing ? "hourglass" : "camera")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(Color.vMutedForeground)
+                                        .frame(width: 40, height: 40)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 0)
+                                                .stroke(Color.vBorder, lineWidth: 0.5)
+                                        )
+                                }
+                                .disabled(recognizing)
                             }
                             .padding(.top, 16)
+
+                            if !playbook.isEmpty {
+                                VLabelText(text: "Your data for these foods")
+                                    .padding(.top, 20)
+
+                                VStack(spacing: 0) {
+                                    ForEach(playbook, id: \.food) { entry in
+                                        HStack {
+                                            Text(entry.food)
+                                                .font(.system(size: 13))
+                                                .foregroundStyle(Color.vForeground)
+                                            Spacer()
+                                            Text("\(entry.delta > 0 ? "+" : "")\(Int(entry.delta)) mg/dL")
+                                                .font(.system(size: 13, weight: .medium))
+                                                .monospacedDigit()
+                                                .foregroundStyle(entry.delta > 20 ? Color.vAmber : Color.vMutedForeground)
+                                        }
+                                        .padding(.vertical, 10)
+
+                                        if let suggestion = entry.suggestion {
+                                            Text(suggestion)
+                                                .font(.system(size: 11))
+                                                .foregroundStyle(Color.vMutedForeground)
+                                                .lineSpacing(2)
+                                                .padding(.bottom, 8)
+                                        }
+                                    }
+                                }
+                                .padding(.top, 8)
+                            }
                         }
                     }
 
@@ -151,6 +197,31 @@ struct MealsLogView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 32)
             }
+        }
+        .onChange(of: photoItem) {
+            guard let photoItem else { return }
+            recognizing = true
+            Task {
+                if let data = try? await photoItem.loadTransferable(type: Data.self) {
+                    let foods = (try? await APIClient.shared.recognizeFood(imageData: data)) ?? []
+                    for food in foods where !selected.contains(food) {
+                        selected.append(food)
+                    }
+                }
+                recognizing = false
+                self.photoItem = nil
+            }
+        }
+        .onChange(of: selected) {
+            fetchPlaybook()
+        }
+    }
+
+    private func fetchPlaybook() {
+        guard !selected.isEmpty else { playbook = []; return }
+        Task {
+            let entries = try? await APIClient.shared.getPlaybook(foods: selected)
+            playbook = (entries ?? []).map { (food: $0.food, delta: $0.avgDelta, suggestion: $0.suggestion) }
         }
     }
 

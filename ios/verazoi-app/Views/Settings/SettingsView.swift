@@ -17,7 +17,9 @@ struct SettingsView: View {
 
                 VStack(spacing: 16) {
                     AccountCard()
+                    CGMSettingsView()
                     GoalsSettingsCard()
+                    MedScheduleView()
                     ExportCard()
                     WearableConnectionCard()
                     if wearable.connectedProvider != nil {
@@ -108,6 +110,14 @@ private struct WearableConnectionCard: View {
                         }
                     }
                     .padding(.top, 16)
+
+                    if let hint = provider.setupHint {
+                        Text(hint)
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color.vMutedForeground)
+                            .lineSpacing(2)
+                            .padding(.top, 8)
+                    }
 
                     if let error = wearable.connectionError {
                         Text(error)
