@@ -68,13 +68,10 @@ struct SpikeRiskView: View {
                     .padding(.vertical, 24)
                 } else {
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("Based on your patterns, there's a ")
-                            .foregroundStyle(Color.vForeground.opacity(0.8)) +
-                        Text("\(riskPercent)% chance")
-                            .fontWeight(.medium)
-                            .foregroundColor(Color.vForeground) +
-                        Text(" of a glucose spike above 140 mg/dL in the next 4 hours.")
-                            .foregroundStyle(Color.vForeground.opacity(0.8))
+                        Text(
+                            "Based on your patterns, there's a \(Text("\(riskPercent)% chance").fontWeight(.medium).foregroundStyle(Color.vForeground)) of a glucose spike above 140 mg/dL in the next 4 hours."
+                        )
+                        .foregroundStyle(Color.vForeground.opacity(0.8))
                     }
                     .font(.system(size: 13))
                     .lineSpacing(4)

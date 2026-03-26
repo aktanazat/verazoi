@@ -22,12 +22,21 @@ export default function MealsLogPage() {
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
   const [recognizing, setRecognizing] = useState(false)
+  const [recognizeError, setRecognizeError] = useState<string | null>(null)
+  const [pendingPhoto, setPendingPhoto] = useState<File | null>(null)
+  const [pendingPhotoUrl, setPendingPhotoUrl] = useState<string | null>(null)
   const [playbook, setPlaybook] = useState<api.PlaybookEntry[]>([])
 
   useEffect(() => {
     if (selected.length === 0) { setPlaybook([]); return }
     api.getPlaybook(selected).then(setPlaybook).catch(() => setPlaybook([]))
   }, [selected])
+
+  useEffect(() => {
+    return () => {
+      if (pendingPhotoUrl) URL.revokeObjectURL(pendingPhotoUrl)
+    }
+  }, [pendingPhotoUrl])
 
   const toggleFood = (food: string) => {
     setSelected((prev) => prev.includes(food) ? prev.filter((f) => f !== food) : [...prev, food])
@@ -47,6 +56,33 @@ export default function MealsLogPage() {
     setSaving(false)
     setSaved(true)
     setTimeout(() => { setSaved(false); setSelected([]); setNotes("") }, 2000)
+  }
+
+  const clearPendingPhoto = () => {
+    if (pendingPhotoUrl) URL.revokeObjectURL(pendingPhotoUrl)
+    setPendingPhoto(null)
+    setPendingPhotoUrl(null)
+  }
+
+  const handlePhotoSelected = (file: File) => {
+    setRecognizeError(null)
+    if (pendingPhotoUrl) URL.revokeObjectURL(pendingPhotoUrl)
+    setPendingPhoto(file)
+    setPendingPhotoUrl(URL.createObjectURL(file))
+  }
+
+  const handleRecognizePhoto = async () => {
+    if (!pendingPhoto || recognizing) return
+    setRecognizing(true)
+    setRecognizeError(null)
+    try {
+      const foods = await api.recognizeFood(pendingPhoto)
+      setSelected((prev) => [...new Set([...prev, ...foods])])
+      clearPendingPhoto()
+    } catch {
+      setRecognizeError("Could not recognize foods from that photo.")
+    }
+    setRecognizing(false)
   }
 
   return (
@@ -117,20 +153,25 @@ export default function MealsLogPage() {
                   capture="environment"
                   className="hidden"
                   disabled={recognizing}
-                  onChange={async (e) => {
+                  onChange={(e) => {
                     const file = e.target.files?.[0]
                     if (!file) return
-                    setRecognizing(true)
-                    const foods = await api.recognizeFood(file).catch(() => [])
-                    setSelected((prev) => [...new Set([...prev, ...foods])])
-                    setRecognizing(false)
+                    handlePhotoSelected(file)
                     e.target.value = ""
                   }}
                 />
               </label>
             </div>
+            {pendingPhoto && (
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                Review the selected photo before upload.
+              </p>
+            )}
             {recognizing && (
               <p className="mt-2 text-[11px] text-muted-foreground">Recognizing foods...</p>
+            )}
+            {recognizeError && (
+              <p className="mt-2 text-[11px] text-amber-700">{recognizeError}</p>
             )}
 
             {playbook.length > 0 && (
@@ -180,6 +221,41 @@ export default function MealsLogPage() {
           />
         </div>
       </div>
+
+      {pendingPhoto && pendingPhotoUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/85 px-6">
+          <div className="w-full max-w-xl border border-border bg-background p-6">
+            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/60">
+              Review photo
+            </p>
+            <img
+              src={pendingPhotoUrl}
+              alt="Meal photo preview"
+              className="mt-4 max-h-[420px] w-full object-contain"
+            />
+            <p className="mt-4 text-[13px] leading-6 text-muted-foreground">
+              This photo will be uploaded to Anthropic for food recognition only
+              if you confirm below.
+            </p>
+            <div className="mt-5 flex gap-3">
+              <button
+                onClick={handleRecognizePhoto}
+                disabled={recognizing}
+                className="flex-1 bg-foreground py-2.5 text-[12px] font-medium tracking-wide text-background disabled:opacity-50"
+              >
+                {recognizing ? "Recognizing..." : "Use this photo"}
+              </button>
+              <button
+                onClick={clearPendingPhoto}
+                disabled={recognizing}
+                className="flex-1 border border-border py-2.5 text-[12px] font-medium tracking-wide text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

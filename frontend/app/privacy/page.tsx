@@ -15,16 +15,16 @@ const sections = [
     body: "If you use meal photo recognition, the selected image is uploaded to Anthropic only after you confirm the preview in the app. If you cancel, the image is not sent.",
   },
   {
-    title: "CGM credentials",
-    body: "Verazoi recommends Apple Health import so you do not need to share Dexcom or Libre credentials. If you choose direct device sign-in, your credentials are sent to Verazoi only to create a provider session. Verazoi does not keep your password after that request.",
+    title: "Glucose import",
+    body: "Verazoi imports CGM glucose through Apple Health. Your CGM credentials stay with your CGM provider app and are not collected by Verazoi.",
   },
   {
     title: "Security",
-    body: "App traffic to the Verazoi API is sent over HTTPS. Authentication uses bearer access tokens, and refresh failures clear the session. Verazoi stores provider session tokens when direct CGM sync is enabled so later syncs can run without asking for your password again.",
+    body: "App traffic to the Verazoi API is sent over HTTPS. Authentication uses bearer access tokens, and refresh failures clear the session. Weekly insight generation and meal photo recognition send data to Anthropic only after the in-app review step.",
   },
   {
     title: "Your choices",
-    body: "You can avoid direct CGM credentials entirely by using Apple Health, skip AI insight generation, skip meal photo recognition, disconnect a CGM provider, and disconnect wearable sync at any time.",
+    body: "You can skip AI insight generation, skip meal photo recognition, disconnect wearable sync, and control Apple Health permissions at any time.",
   },
 ]
 

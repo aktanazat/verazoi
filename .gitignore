@@ -8,11 +8,17 @@ frontend/_frames/
 # Backend
 backend/.venv/
 backend/__pycache__/
+**/__pycache__/
+*.py[cod]
 
 # iOS
 ios/**/*.xcuserdata
+ios/**/xcuserdata/
+ios/**/*.xcuserdatad/
+ios/build/
 
 # Common
 .env*.local
 .DS_Store
 .claude/
+verazoi-website.zip

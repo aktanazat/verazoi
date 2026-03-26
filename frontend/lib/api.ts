@@ -243,37 +243,25 @@ export function getFoodImpact(days = 30) {
 // ── Insights ──
 
 export type InsightResponse = { id: string; week_start: string; summary: string; generated_at: string }
+export type InsightPreviewResponse = { week_start: string; week_end: string; system_prompt: string; user_prompt: string }
 
 export function getWeeklyInsight() {
   return request<InsightResponse | { status: string }>("/insights/weekly")
 }
 
-export function generateWeeklyInsight() {
-  return request<InsightResponse>("/insights/weekly/generate", { method: "POST" })
+export function getWeeklyInsightPreview() {
+  return request<InsightPreviewResponse>("/insights/weekly/preview")
+}
+
+export function generateWeeklyInsight(week_start: string, user_prompt: string) {
+  return request<InsightResponse>("/insights/weekly/generate", {
+    method: "POST",
+    body: { week_start, user_prompt },
+  })
 }
 
 export function getInsightHistory(limit = 10) {
   return request<InsightResponse[]>(`/insights/history?limit=${limit}`)
-}
-
-// ── CGM ──
-
-export function connectCGM(provider: string, username: string, password: string) {
-  return request<{ status: string }>("/cgm/connect", { method: "POST", body: { provider, username, password } })
-}
-
-export function syncCGM() {
-  return request<{ status: string; readings_imported: number }>("/cgm/sync", { method: "POST" })
-}
-
-export type CGMStatus = { provider: string; active: boolean; last_sync: string | null }
-
-export function getCGMStatus() {
-  return request<CGMStatus[]>("/cgm/status")
-}
-
-export function disconnectCGM() {
-  return request<{ status: string }>("/cgm/disconnect", { method: "DELETE" })
 }
 
 // ── Meal Photo Recognition ──

@@ -25,17 +25,22 @@ actor APIClient {
         onSessionExpired = handler
     }
 
-    private let decoder: JSONDecoder = {
+    static func makeDecoder() -> JSONDecoder {
         let d = JSONDecoder()
         d.keyDecodingStrategy = .convertFromSnakeCase
         d.dateDecodingStrategy = .iso8601
         return d
-    }()
-    private let encoder: JSONEncoder = {
+    }
+
+    static func makeEncoder() -> JSONEncoder {
         let e = JSONEncoder()
         e.keyEncodingStrategy = .convertToSnakeCase
+        e.dateEncodingStrategy = .iso8601
         return e
-    }()
+    }
+
+    private let decoder = APIClient.makeDecoder()
+    private let encoder = APIClient.makeEncoder()
 
     func setToken(_ t: String?) { token = t }
     func setRefreshToken(_ t: String?) { refreshToken = t }
@@ -312,27 +317,6 @@ actor APIClient {
 
     func getInsightHistory(limit: Int = 10) async throws -> [InsightRecord] {
         try await request("GET", "/insights/history?limit=\(limit)")
-    }
-
-    // MARK: - CGM
-
-    struct CGMConnectBody: Encodable { let provider: String; let username: String; let password: String }
-    struct CGMStatus: Decodable { let provider: String; let active: Bool; let lastSync: String? }
-
-    func connectCGM(provider: String, username: String, password: String) async throws {
-        let _: [String: String] = try await request("POST", "/cgm/connect", body: CGMConnectBody(provider: provider, username: username, password: password))
-    }
-
-    func syncCGM() async throws -> [String: String] {
-        try await request("POST", "/cgm/sync")
-    }
-
-    func getCGMStatus() async throws -> [CGMStatus] {
-        try await request("GET", "/cgm/status")
-    }
-
-    func disconnectCGM() async throws {
-        let _: [String: String] = try await request("DELETE", "/cgm/disconnect")
     }
 
     // MARK: - Meal Photo Recognition

@@ -7,6 +7,7 @@ struct GoalsSettingsCard: View {
     @State private var dailySteps: Int = 10000
     @State private var sleepHours: Double = 8
     @State private var saving = false
+    @State private var saveError: String?
 
     private var rangeInvalid: Bool {
         glucoseLow >= glucoseHigh
@@ -39,6 +40,11 @@ struct GoalsSettingsCard: View {
                         .font(.system(size: 11))
                         .foregroundStyle(Color.vAmber)
                         .padding(.top, 4)
+                } else if let saveError {
+                    Text(saveError)
+                        .font(.system(size: 11))
+                        .foregroundStyle(Color.vAmber)
+                        .padding(.top, 4)
                 }
 
                 VLabelText(text: "Daily steps")
@@ -58,20 +64,31 @@ struct GoalsSettingsCard: View {
                     .padding(.top, 8)
 
                 Button {
+                    saveError = nil
                     saving = true
                     Task {
-                        try? await APIClient.shared.updateGoals(
-                            glucoseLow: glucoseLow,
-                            glucoseHigh: glucoseHigh,
-                            dailySteps: dailySteps,
-                            sleepHours: sleepHours
-                        )
-                        state.goals = UserGoals(
-                            glucoseLow: glucoseLow,
-                            glucoseHigh: glucoseHigh,
-                            dailySteps: dailySteps,
-                            sleepHours: sleepHours
-                        )
+                        do {
+                            let savedGoals = try await APIClient.shared.updateGoals(
+                                glucoseLow: glucoseLow,
+                                glucoseHigh: glucoseHigh,
+                                dailySteps: dailySteps,
+                                sleepHours: sleepHours
+                            )
+                            state.goals = UserGoals(
+                                glucoseLow: savedGoals.glucoseLow,
+                                glucoseHigh: savedGoals.glucoseHigh,
+                                dailySteps: savedGoals.dailySteps,
+                                sleepHours: savedGoals.sleepHours
+                            )
+                        } catch let error as APIError {
+                            if case .httpError(_, let detail) = error {
+                                saveError = detail
+                            } else {
+                                saveError = "Could not save goals."
+                            }
+                        } catch {
+                            saveError = "Could not save goals."
+                        }
                         saving = false
                     }
                 } label: {

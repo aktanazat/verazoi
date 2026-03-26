@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from "react"
 import { Sparkles } from "lucide-react"
 import {
-  getWeeklyInsight, generateWeeklyInsight, getInsightHistory,
-  type InsightResponse,
+  getWeeklyInsight, getWeeklyInsightPreview, generateWeeklyInsight, getInsightHistory,
+  type InsightPreviewResponse, type InsightResponse,
 } from "@/lib/api"
 
 function isInsight(data: InsightResponse | { status: string }): data is InsightResponse {
@@ -14,8 +14,11 @@ function isInsight(data: InsightResponse | { status: string }): data is InsightR
 export default function InsightsPage() {
   const [current, setCurrent] = useState<InsightResponse | null>(null)
   const [history, setHistory] = useState<InsightResponse[]>([])
+  const [preview, setPreview] = useState<InsightPreviewResponse | null>(null)
   const [loading, setLoading] = useState(true)
+  const [loadingPreview, setLoadingPreview] = useState(false)
   const [generating, setGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     try {
@@ -31,14 +34,30 @@ export default function InsightsPage() {
 
   useEffect(() => { fetchData() }, [fetchData])
 
-  const handleGenerate = async () => {
-    setGenerating(true)
+  const handleLoadPreview = async () => {
+    setLoadingPreview(true)
+    setError(null)
     try {
-      const insight = await generateWeeklyInsight()
+      setPreview(await getWeeklyInsightPreview())
+    } catch {
+      setPreview(null)
+      setError("Could not load the reviewed payload.")
+    }
+    setLoadingPreview(false)
+  }
+
+  const handleGenerate = async () => {
+    if (!preview) return
+    setGenerating(true)
+    setError(null)
+    try {
+      const insight = await generateWeeklyInsight(preview.week_start, preview.user_prompt)
       setCurrent(insight)
       const hist = await getInsightHistory()
       setHistory(hist)
-    } catch {}
+    } catch {
+      setError("Could not generate the weekly insight.")
+    }
     setGenerating(false)
   }
 
@@ -70,6 +89,59 @@ export default function InsightsPage() {
             <Sparkles className="h-4 w-4 text-muted-foreground/60" strokeWidth={1.5} />
           </div>
 
+          <p className="mt-5 text-[12px] leading-5 text-muted-foreground">
+            Review the exact weekly payload before sending it to Anthropic.
+            Nothing is sent until you choose to generate the insight.
+          </p>
+
+          <button
+            onClick={handleLoadPreview}
+            disabled={loadingPreview}
+            className="mt-4 w-full border border-border py-2.5 text-[12px] font-medium tracking-wide text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground disabled:opacity-50"
+          >
+            {loadingPreview ? "Loading preview..." : "Review AI payload"}
+          </button>
+
+          {preview ? (
+            <div className="mt-5 space-y-4">
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/60">
+                  Week
+                </p>
+                <p className="mt-2 text-[12px] text-foreground/80">
+                  {formatDate(preview.week_start)} to {formatDate(preview.week_end)}
+                </p>
+              </div>
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/60">
+                  System prompt
+                </p>
+                <p className="mt-2 text-[12px] leading-relaxed text-foreground/80">
+                  {preview.system_prompt}
+                </p>
+              </div>
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground/60">
+                  User payload
+                </p>
+                <pre className="mt-2 whitespace-pre-wrap border border-border bg-secondary/50 p-4 font-mono text-[12px] leading-relaxed text-foreground/80">
+                  {preview.user_prompt}
+                </pre>
+              </div>
+            </div>
+          ) : (
+            <p className="mt-5 text-[12px] leading-5 text-muted-foreground">
+              Load the payload preview before generating so you can verify the
+              exact data sent to Anthropic.
+            </p>
+          )}
+
+          {error && (
+            <p className="mt-4 text-[12px] text-amber-700">
+              {error}
+            </p>
+          )}
+
           {loading ? (
             <p className="mt-6 text-[13px] text-muted-foreground">Loading...</p>
           ) : current ? (
@@ -94,10 +166,10 @@ export default function InsightsPage() {
 
           <button
             onClick={handleGenerate}
-            disabled={generating}
+            disabled={generating || !preview}
             className="mt-5 w-full bg-foreground py-2.5 text-[12px] font-medium tracking-wide text-background disabled:opacity-50"
           >
-            {generating ? "Generating..." : current ? "Regenerate insight" : "Generate insight"}
+            {generating ? "Generating..." : current ? "Regenerate insight" : (preview ? "Generate insight" : "Review AI payload to continue")}
           </button>
         </div>
 

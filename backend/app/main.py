@@ -13,7 +13,7 @@ from app.routes import (
     auth, glucose, meals, activity, sleep, timeline,
     stability, sync, medications, goals, trends,
     correlations, insights, export,
-    cgm, recognize, playbook, experiments, fasting, med_schedules,
+    recognize, playbook, experiments, fasting, med_schedules,
 )
 
 
@@ -70,7 +70,6 @@ app.include_router(trends.router, prefix=prefix)
 app.include_router(correlations.router, prefix=prefix)
 app.include_router(insights.router, prefix=prefix)
 app.include_router(export.router, prefix=prefix)
-app.include_router(cgm.router, prefix=prefix)
 app.include_router(recognize.router, prefix=prefix)
 app.include_router(playbook.router, prefix=prefix)
 app.include_router(experiments.router, prefix=prefix)
