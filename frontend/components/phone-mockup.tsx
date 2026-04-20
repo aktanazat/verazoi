@@ -147,7 +147,6 @@ function DashboardScreen({
   score,
   gain,
   avgGlucose,
-  variability,
   inRange,
   timeframe,
   onTimeframeChange,
@@ -158,7 +157,6 @@ function DashboardScreen({
   score: number
   gain: number
   avgGlucose: number
-  variability: number
   inRange: number
   timeframe: Timeframe
   onTimeframeChange: (value: Timeframe) => void
@@ -193,7 +191,6 @@ function DashboardScreen({
 
       <div className="mt-3 flex justify-center gap-6">
         <MiniMetric label="Avg glucose" value={String(avgGlucose)} />
-        <MiniMetric label="Variability" value={String(variability)} />
         <MiniMetric label="In range" value={`${inRange}%`} />
       </div>
 
@@ -393,7 +390,6 @@ function AppScreen() {
   const score = clamp(baseScore + gain, 55, 99)
 
   const avgGlucose = clamp(96 - Math.round(gain * 0.8), 82, 110)
-  const variability = clamp(22 - Math.round(gain * 0.7), 12, 30)
   const inRange = clamp(91 + Math.round(gain * 0.7), 88, 99)
 
   const timelineMetrics = useMemo(() => {
@@ -449,7 +445,6 @@ function AppScreen() {
               score={score}
               gain={gain}
               avgGlucose={avgGlucose}
-              variability={variability}
               inRange={inRange}
               timeframe={timeframe}
               onTimeframeChange={setTimeframe}

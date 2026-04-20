@@ -60,10 +60,9 @@ function DashboardShowcase() {
       </div>
       <p className="text-center text-[11px] text-primary/70">+7 projected from your plan</p>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {[
           { label: "Avg glucose", value: "94" },
-          { label: "Variability", value: "18" },
           { label: "In range", value: "93%" },
         ].map((m) => (
           <div key={m.label} className="rounded-xl border border-primary/10 bg-primary/[0.03] p-3 text-center">

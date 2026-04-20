@@ -37,9 +37,6 @@ export function StabilityScore() {
   const avgGlucose = readings.length > 0
     ? Math.round(readings.reduce((sum, r) => sum + r.value, 0) / readings.length)
     : 0
-  const variability = readings.length > 1
-    ? Math.round(Math.max(...readings.map((r) => r.value)) - Math.min(...readings.map((r) => r.value)))
-    : 0
   const inRange = readings.length > 0
     ? Math.round((readings.filter((r) => r.value >= 70 && r.value <= 140).length / readings.length) * 100)
     : 0
@@ -93,14 +90,10 @@ export function StabilityScore() {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-3 gap-4">
+      <div className="mt-6 grid grid-cols-2 gap-4">
         <div className="text-center">
           <p className="font-serif text-[28px] font-light text-foreground">{avgGlucose}</p>
           <p className="mt-1 text-[13px] text-muted-foreground">Avg glucose</p>
-        </div>
-        <div className="text-center">
-          <p className="font-serif text-[28px] font-light text-foreground">{variability}</p>
-          <p className="mt-1 text-[13px] text-muted-foreground">Variability</p>
         </div>
         <div className="text-center">
           <p className="font-serif text-[28px] font-light text-foreground">{inRange}%</p>
