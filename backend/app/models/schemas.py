@@ -2,7 +2,6 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 
-# ── Auth ──
 
 class RegisterRequest(BaseModel):
     email: str
@@ -39,7 +38,6 @@ class UserResponse(BaseModel):
     created_at: datetime
 
 
-# ── Glucose ──
 
 class GlucoseCreate(BaseModel):
     value: int = Field(ge=20, le=500)
@@ -53,7 +51,6 @@ class GlucoseResponse(BaseModel):
     recorded_at: datetime
 
 
-# ── Meals ──
 
 class MealCreate(BaseModel):
     meal_type: str
@@ -69,7 +66,6 @@ class MealResponse(BaseModel):
     recorded_at: datetime
 
 
-# ── Activity ──
 
 class ActivityCreate(BaseModel):
     activity_type: str
@@ -85,7 +81,6 @@ class ActivityResponse(BaseModel):
     recorded_at: datetime
 
 
-# ── Sleep ──
 
 class SleepCreate(BaseModel):
     hours: float = Field(ge=0, le=24)
@@ -99,7 +94,6 @@ class SleepResponse(BaseModel):
     recorded_at: datetime
 
 
-# ── Timeline ──
 
 class TimelineEvent(BaseModel):
     id: str
@@ -109,7 +103,6 @@ class TimelineEvent(BaseModel):
     recorded_at: datetime
 
 
-# ── Stability ──
 
 class StabilityResponse(BaseModel):
     score: int
@@ -121,7 +114,6 @@ class StabilityResponse(BaseModel):
     spike_factors: list[dict]
 
 
-# ── Wearable ──
 
 class GlucoseSyncReading(BaseModel):
     value: int = Field(ge=20, le=500)
@@ -137,7 +129,6 @@ class WearableSyncRequest(BaseModel):
     glucose_readings: list[GlucoseSyncReading] | None = None
 
 
-# ── Medications ──
 
 class MedicationCreate(BaseModel):
     name: str
@@ -157,7 +148,6 @@ class MedicationResponse(BaseModel):
     recorded_at: datetime
 
 
-# ── Goals ──
 
 class GoalsUpsert(BaseModel):
     glucose_low: int = 70
@@ -178,7 +168,6 @@ class GoalProgress(BaseModel):
     sleep_target: float
 
 
-# ── Trends ──
 
 class GlucoseTrendPoint(BaseModel):
     date: str
@@ -193,7 +182,6 @@ class StabilityTrendPoint(BaseModel):
     score: int
 
 
-# ── Correlations ──
 
 class MealGlucoseCorrelation(BaseModel):
     meal_id: str
@@ -211,7 +199,6 @@ class FoodImpact(BaseModel):
     occurrences: int
 
 
-# ── Insights ──
 
 class InsightResponse(BaseModel):
     id: str
@@ -232,7 +219,6 @@ class InsightGenerateRequest(BaseModel):
     user_prompt: str
 
 
-# ── CGM ──
 
 class CGMConnectRequest(BaseModel):
     provider: str = Field(pattern=r"^(dexcom|libre)$")
@@ -246,13 +232,11 @@ class CGMStatusResponse(BaseModel):
     last_sync: datetime | None
 
 
-# ── Meal Photo Recognition ──
 
 class FoodRecognitionResponse(BaseModel):
     foods: list[str]
 
 
-# ── Pre-meal Playbook ──
 
 class PlaybookEntry(BaseModel):
     food: str
@@ -261,7 +245,6 @@ class PlaybookEntry(BaseModel):
     suggestion: str | None = None
 
 
-# ── Experiments ──
 
 class ExperimentCreate(BaseModel):
     name: str
@@ -301,7 +284,6 @@ class ExperimentComparison(BaseModel):
     avg_delta_b: float | None
 
 
-# ── Fasting ──
 
 class FastingStartRequest(BaseModel):
     target_hours: float | None = None
@@ -316,7 +298,6 @@ class FastingSessionResponse(BaseModel):
     glucose_readings: list[GlucoseResponse] = []
 
 
-# ── Medication Schedules ──
 
 class MedScheduleCreate(BaseModel):
     medication_name: str

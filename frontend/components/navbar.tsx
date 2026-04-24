@@ -11,6 +11,7 @@ const links = [
   { label: "App", href: "#quick-view" },
   { label: "Our Story", href: "#our-story" },
   { label: "Testimonials", href: "#testimonials" },
+  { label: "Team", href: "#team" },
   { label: "FAQ", href: "#faq" },
 ]
 

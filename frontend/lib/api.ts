@@ -62,7 +62,6 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   return res.json()
 }
 
-// ── Auth ──
 
 export type TokenResponse = { access_token: string; token_type: string }
 
@@ -87,7 +86,6 @@ export function getMe() {
   return request<{ id: string; email: string; created_at: string }>("/auth/me")
 }
 
-// ── Glucose ──
 
 export type GlucoseReading = { id: string; value: number; timing: string; recorded_at: string }
 
@@ -99,7 +97,6 @@ export function listGlucose(limit = 50) {
   return request<GlucoseReading[]>(`/glucose?limit=${limit}`)
 }
 
-// ── Meals ──
 
 export type Meal = { id: string; meal_type: string; foods: string[]; notes: string; recorded_at: string }
 
@@ -111,7 +108,6 @@ export function listMeals(limit = 50) {
   return request<Meal[]>(`/meals?limit=${limit}`)
 }
 
-// ── Activities ──
 
 export type Activity = { id: string; activity_type: string; duration: number; intensity: string; recorded_at: string }
 
@@ -123,7 +119,6 @@ export function listActivities(limit = 50) {
   return request<Activity[]>(`/activities?limit=${limit}`)
 }
 
-// ── Sleep ──
 
 export type SleepEntry = { id: string; hours: number; quality: string; recorded_at: string }
 
@@ -135,7 +130,6 @@ export function listSleep(limit = 50) {
   return request<SleepEntry[]>(`/sleep?limit=${limit}`)
 }
 
-// ── Timeline ──
 
 export type TimelineEvent = { id: string; type: string; label: string; value: string; recorded_at: string }
 
@@ -143,7 +137,6 @@ export function listTimeline(limit = 50) {
   return request<TimelineEvent[]>(`/timeline?limit=${limit}`)
 }
 
-// ── Stability ──
 
 export type StabilityScore = {
   score: number
@@ -159,7 +152,6 @@ export function getStabilityScore() {
   return request<StabilityScore>("/stability/score")
 }
 
-// ── Wearable sync ──
 
 export function syncWearable(data: {
   heart_rate?: number
@@ -185,7 +177,6 @@ export function getWearableStatus() {
   return request<WearableStatus>("/sync/wearable")
 }
 
-// ── Medications ──
 
 export type Medication = { id: string; name: string; dose_value: number; dose_unit: string; timing: string; notes: string; recorded_at: string }
 
@@ -197,7 +188,6 @@ export function listMedications(limit = 50) {
   return request<Medication[]>(`/medications?limit=${limit}`)
 }
 
-// ── Goals ──
 
 export type Goals = { glucose_low: number; glucose_high: number; daily_steps: number; sleep_hours: number }
 export type GoalProgress = { glucose_in_range_pct: number; steps_today: number; steps_target: number; sleep_last: number; sleep_target: number }
@@ -214,7 +204,6 @@ export function getGoalProgress() {
   return request<GoalProgress>("/goals/progress")
 }
 
-// ── Trends ──
 
 export type GlucoseTrendPoint = { date: string; avg: number; min: number; max: number; count: number }
 export type StabilityTrendPoint = { date: string; score: number }
@@ -227,7 +216,6 @@ export function getStabilityTrend(days = 30) {
   return request<StabilityTrendPoint[]>(`/trends/stability?days=${days}`)
 }
 
-// ── Correlations ──
 
 export type MealGlucoseCorrelation = { meal_id: string; meal_type: string; foods: string[]; recorded_at: string; pre_meal_glucose: number | null; peak_glucose: number | null; glucose_delta: number | null }
 export type FoodImpact = { food: string; avg_delta: number; occurrences: number }
@@ -240,7 +228,6 @@ export function getFoodImpact(days = 30) {
   return request<FoodImpact[]>(`/correlations/food-impact?days=${days}`)
 }
 
-// ── Insights ──
 
 export type InsightResponse = { id: string; week_start: string; summary: string; generated_at: string }
 export type InsightPreviewResponse = { week_start: string; week_end: string; system_prompt: string; user_prompt: string }
@@ -264,7 +251,6 @@ export function getInsightHistory(limit = 10) {
   return request<InsightResponse[]>(`/insights/history?limit=${limit}`)
 }
 
-// ── Meal Photo Recognition ──
 
 export async function recognizeFood(file: File): Promise<string[]> {
   const formData = new FormData()
@@ -284,7 +270,6 @@ export async function recognizeFood(file: File): Promise<string[]> {
   return data.foods
 }
 
-// ── Pre-meal Playbook ──
 
 export type PlaybookEntry = { food: string; avg_delta: number; occurrences: number; suggestion: string | null }
 
@@ -292,7 +277,6 @@ export function getPlaybook(foods: string[]) {
   return request<PlaybookEntry[]>(`/meals/playbook?foods=${foods.join(",")}`)
 }
 
-// ── Experiments ──
 
 export type Experiment = { id: string; name: string; food_a: string; food_b: string; status: string; created_at: string }
 export type ExperimentEntry = { id: string; arm: string; pre_glucose: number; peak_glucose: number; glucose_delta: number; recorded_at: string }
@@ -318,7 +302,6 @@ export function completeExperiment(id: string) {
   return request<{ status: string }>(`/experiments/${id}/complete`, { method: "POST" })
 }
 
-// ── Fasting ──
 
 export type FastingSession = { id: string; started_at: string; ended_at: string | null; target_hours: number | null; elapsed_hours: number }
 
@@ -338,7 +321,6 @@ export function fastingHistory(limit = 10) {
   return request<FastingSession[]>(`/fasting/history?limit=${limit}`)
 }
 
-// ── Medication Schedules ──
 
 export type MedSchedule = { id: string; medication_name: string; dose_value: number; dose_unit: string; schedule_time: string; days_of_week: number[]; active: boolean }
 
@@ -354,7 +336,6 @@ export function deleteMedSchedule(id: string) {
   return request<{ status: string }>(`/medication-schedules/${id}`, { method: "DELETE" })
 }
 
-// ── Export ──
 
 export async function exportCSV(fromDate?: string, toDate?: string) {
   const params = new URLSearchParams()
