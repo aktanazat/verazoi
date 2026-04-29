@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import type { CSSProperties } from "react"
 import { Linkedin, Mail } from "lucide-react"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import desireePic from "@/public/images/team/desiree.png"
@@ -19,6 +20,7 @@ type Person = {
   email: string
   linkedin: string
   image: typeof desireePic
+  imageStyle?: CSSProperties
 }
 
 const leadership: Person[] = [
@@ -29,6 +31,10 @@ const leadership: Person[] = [
     email: "debishnoi@ucdavis.edu",
     linkedin: "https://www.linkedin.com/in/desiree-bishnoi",
     image: desireePic,
+    imageStyle: {
+      transform: "translate(3%, -12%) scale(1.18)",
+      transformOrigin: "center",
+    },
   },
   {
     name: "Roshni Sandhu",
@@ -37,6 +43,10 @@ const leadership: Person[] = [
     email: "rrsandhu@ucdavis.edu",
     linkedin: "https://www.linkedin.com/in/roshnisandhu/",
     image: roshniPic,
+    imageStyle: {
+      transform: "translate(3%, -4%) scale(1.1)",
+      transformOrigin: "center",
+    },
   },
 ]
 
@@ -71,6 +81,7 @@ type Advisor = {
   name: string
   role: string
   image: typeof ozeranPic
+  imageStyle?: CSSProperties
 }
 
 const advisors: Advisor[] = [
@@ -83,6 +94,10 @@ const advisors: Advisor[] = [
     name: "Karsten Russell-Wood",
     role: "Chief Marketing & Experience Officer @ EQUUM",
     image: karstenPic,
+    imageStyle: {
+      transform: "translate(3%, -3%) scale(1.12)",
+      transformOrigin: "center",
+    },
   },
   {
     name: "Chance Mathisen",
@@ -94,14 +109,17 @@ const advisors: Advisor[] = [
 function PersonCard({ person }: { person: Person }) {
   return (
     <div className="gradient-border card-premium group flex h-full flex-col items-center rounded-2xl bg-card/40 px-6 py-8 text-center transition-shadow duration-500 hover:shadow-xl hover:shadow-primary/5">
-      <div className="relative h-32 w-32 overflow-hidden rounded-full bg-muted ring-1 ring-border/60 transition-all duration-500 group-hover:ring-primary/40 group-hover:ring-offset-2 group-hover:ring-offset-background">
-        <Image
-          src={person.image}
-          alt={person.name}
-          fill
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-          sizes="128px"
-        />
+      <div className="relative h-32 w-32 overflow-hidden rounded-full bg-gradient-to-br from-muted via-background to-muted ring-1 ring-border/60 transition-all duration-500 group-hover:ring-primary/40 group-hover:ring-offset-2 group-hover:ring-offset-background">
+        <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
+          <Image
+            src={person.image}
+            alt={person.name}
+            fill
+            className="object-cover object-center"
+            sizes="128px"
+            style={person.imageStyle}
+          />
+        </div>
       </div>
       <h3 className="mt-6 text-[15px] font-medium tracking-tight text-foreground">
         {person.name}
@@ -215,14 +233,17 @@ export function Team() {
               }`}
               style={{ transitionDelay: `${400 + i * 100}ms` }}
             >
-              <div className="relative h-24 w-24 overflow-hidden rounded-full bg-muted ring-1 ring-border/60 grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:ring-primary/30">
-                <Image
-                  src={a.image}
-                  alt={a.name}
-                  fill
-                  className="object-cover"
-                  sizes="96px"
-                />
+              <div className="relative h-24 w-24 overflow-hidden rounded-full bg-gradient-to-br from-muted via-background to-muted ring-1 ring-border/60 transition-all duration-500 group-hover:ring-primary/30">
+                <div className="absolute inset-0 grayscale transition-all duration-700 ease-out group-hover:scale-[1.04] group-hover:grayscale-0">
+                  <Image
+                    src={a.image}
+                    alt={a.name}
+                    fill
+                    className="object-cover object-center"
+                    sizes="96px"
+                    style={a.imageStyle}
+                  />
+                </div>
               </div>
               <p className="mt-5 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
                 Advisor
