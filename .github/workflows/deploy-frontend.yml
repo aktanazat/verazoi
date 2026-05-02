@@ -31,19 +31,6 @@ jobs:
         working-directory: frontend
       - run: pnpm build
         working-directory: frontend
-      - name: Verify CF token
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          echo "token length: ${#CLOUDFLARE_API_TOKEN}"
-          curl -s -o /tmp/v.json -w "verify_status: %{http_code}\n" \
-            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            https://api.cloudflare.com/client/v4/user/tokens/verify
-          jq '.success, .errors, .result.status' /tmp/v.json
-          curl -s -o /tmp/p.json -w "project_status: %{http_code}\n" \
-            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            "https://api.cloudflare.com/client/v4/accounts/405bd9830f9298184122beff64a167a7/pages/projects/verazoi"
-          jq '.success, .errors, .result.name' /tmp/p.json
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
