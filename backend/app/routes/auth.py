@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Response, Request, status
 from fastapi.responses import RedirectResponse
+from app.routes.redirects import frontend_redirect
 import asyncpg
 
 from app.config import settings
@@ -17,13 +18,6 @@ from app.services.auth import (
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 IS_PROD = settings.env == "production"
-
-
-def _redirect_to_origin(request: Request, path: str) -> str:
-    origin = request.headers.get("origin")
-    if origin:
-        return f"{origin.rstrip('/')}{path}"
-    return path
 
 
 def _deliver_password_reset_token(email: str, raw_token: str) -> None:
@@ -93,13 +87,13 @@ async def register_form(
     form = await request.form()
     email = str(form.get("email", ""))
     password = str(form.get("password", ""))
-    response = RedirectResponse(_redirect_to_origin(request, "/app/dashboard"), status_code=303)
+    response = RedirectResponse(frontend_redirect("/app/dashboard"), status_code=303)
     try:
         if len(password) < 8:
             raise HTTPException(status_code=400, detail="Password too short")
         await _register_user(email, password, response, db)
     except HTTPException:
-        return RedirectResponse(_redirect_to_origin(request, "/login?auth_error=register"), status_code=303)
+        return RedirectResponse(frontend_redirect("/login?auth_error=register"), status_code=303)
     return response
 
 
@@ -134,11 +128,11 @@ async def login_form(
     form = await request.form()
     email = str(form.get("email", ""))
     password = str(form.get("password", ""))
-    response = RedirectResponse(_redirect_to_origin(request, "/app/dashboard"), status_code=303)
+    response = RedirectResponse(frontend_redirect("/app/dashboard"), status_code=303)
     try:
         await _login_user(email, password, response, db)
     except HTTPException:
-        return RedirectResponse(_redirect_to_origin(request, "/login?auth_error=invalid"), status_code=303)
+        return RedirectResponse(frontend_redirect("/login?auth_error=invalid"), status_code=303)
     return response
 
 

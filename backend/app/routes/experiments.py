@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import RedirectResponse
+from app.routes.redirects import frontend_redirect
 import asyncpg
 from app.database import get_db
 from app.models.schemas import (
@@ -9,13 +10,6 @@ from app.models.schemas import (
 from app.services.auth import get_current_user
 
 router = APIRouter(prefix="/experiments", tags=["experiments"])
-
-
-def _redirect_to_origin(request: Request, path: str) -> str:
-    origin = request.headers.get("origin")
-    if origin:
-        return f"{origin.rstrip('/')}{path}"
-    return path
 
 
 @router.post("", response_model=ExperimentResponse, status_code=201)
@@ -48,7 +42,7 @@ async def create_experiment_form(
         str(form.get("food_a", "")),
         str(form.get("food_b", "")),
     )
-    return RedirectResponse(_redirect_to_origin(request, "/app/log/experiments"), status_code=303)
+    return RedirectResponse(frontend_redirect("/app/log/experiments"), status_code=303)
 
 
 @router.get("", response_model=list[ExperimentResponse])

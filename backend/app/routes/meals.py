@@ -1,18 +1,12 @@
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import RedirectResponse
+from app.routes.redirects import frontend_redirect
 import asyncpg
 from app.database import get_db
 from app.models.schemas import MealCreate, MealResponse
 from app.services.auth import get_current_user
 
 router = APIRouter(prefix="/meals", tags=["meals"])
-
-
-def _redirect_to_origin(request: Request, path: str) -> str:
-    origin = request.headers.get("origin")
-    if origin:
-        return f"{origin.rstrip('/')}{path}"
-    return path
 
 
 @router.post("", response_model=MealResponse, status_code=201)
@@ -43,14 +37,14 @@ async def create_meal_form(
         entries.append(custom_food.strip())
     entries = list(dict.fromkeys(entries))
     if not entries:
-        return RedirectResponse(_redirect_to_origin(request, "/app/log/meals?meal_error=missing"), status_code=303)
+        return RedirectResponse(frontend_redirect("/app/log/meals?meal_error=missing"), status_code=303)
 
     await db.execute(
         """INSERT INTO meals (user_id, meal_type, foods, notes)
            VALUES ($1::uuid, $2, $3, $4)""",
         user_id, str(form.get("meal_type", "Breakfast")), entries, str(form.get("notes", "")),
     )
-    return RedirectResponse(_redirect_to_origin(request, "/app/log/meals"), status_code=303)
+    return RedirectResponse(frontend_redirect("/app/log/meals"), status_code=303)
 
 
 @router.get("", response_model=list[MealResponse])

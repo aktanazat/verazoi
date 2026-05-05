@@ -1,19 +1,13 @@
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import RedirectResponse
+from app.routes.redirects import frontend_redirect
 import asyncpg
 from app.database import get_db
 from app.models.schemas import FastingStartRequest, FastingSessionResponse, GlucoseResponse
 from app.services.auth import get_current_user
 
 router = APIRouter(prefix="/fasting", tags=["fasting"])
-
-
-def _redirect_to_origin(request: Request, path: str) -> str:
-    origin = request.headers.get("origin")
-    if origin:
-        return f"{origin.rstrip('/')}{path}"
-    return path
 
 
 @router.post("/start", status_code=201)
@@ -61,7 +55,7 @@ async def start_fast_form(
            VALUES ($1::uuid, now(), $2)""",
         user_id, target_hours,
     )
-    return RedirectResponse(_redirect_to_origin(request, "/app/log/fasting"), status_code=303)
+    return RedirectResponse(frontend_redirect("/app/log/fasting"), status_code=303)
 
 
 @router.post("/end")
@@ -96,7 +90,7 @@ async def end_fast_form(
            WHERE user_id = $1::uuid AND ended_at IS NULL""",
         user_id,
     )
-    return RedirectResponse(_redirect_to_origin(request, "/app/log/fasting"), status_code=303)
+    return RedirectResponse(frontend_redirect("/app/log/fasting"), status_code=303)
 
 
 @router.get("/active")

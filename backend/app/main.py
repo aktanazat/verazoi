@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings, log
 from app.database import get_pool, close_pool
 from app.redis_client import get_redis, close_redis
+from app.middleware.origin import OriginGuardMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware
 from app.routes import (
     auth, glucose, meals, activity, sleep, timeline,
@@ -53,6 +54,7 @@ app.add_middleware(
 )
 
 app.add_middleware(RateLimitMiddleware)
+app.add_middleware(OriginGuardMiddleware)
 
 prefix = "/api/v1"
 app.include_router(auth.router, prefix=prefix)
