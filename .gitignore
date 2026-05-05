@@ -5,6 +5,10 @@ frontend/out/
 frontend/*.tsbuildinfo
 frontend/_frames/
 
+# Infra
+infra/cf/node_modules/
+infra/cf/.wrangler/
+
 # Backend
 backend/.venv/
 backend/__pycache__/

@@ -7,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings, log
 from app.database import get_pool, close_pool
-from app.redis_client import get_redis, close_redis
 from app.middleware.origin import OriginGuardMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware
 from app.routes import (
@@ -27,7 +26,7 @@ async def lifespan(app: FastAPI):
     yield
 
     log.info("Shutting down")
-    await asyncio.gather(close_pool(), close_redis())
+    await close_pool()
 
 
 app = FastAPI(
@@ -82,15 +81,6 @@ async def health():
         checks["database"] = "ok"
     except Exception:
         checks["database"] = "error"
-
-    try:
-        r = await asyncio.wait_for(get_redis(), timeout=5)
-        if r is None:
-            raise RuntimeError("Redis unavailable")
-        await asyncio.wait_for(r.ping(), timeout=5)
-        checks["redis"] = "ok"
-    except Exception:
-        checks["redis"] = "error"
 
     status = "ok" if all(v == "ok" for v in checks.values()) else "degraded"
     return {"status": status, "checks": checks}
