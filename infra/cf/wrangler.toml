@@ -1,0 +1,29 @@
+name = "verazoi-api"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+account_id = "405bd9830f9298184122beff64a167a7"
+
+[[containers]]
+class_name = "VerazoiBackend"
+image = "../../backend/Dockerfile"
+instance_type = "basic"
+max_instances = 3
+
+[[durable_objects.bindings]]
+name = "BACKEND"
+class_name = "VerazoiBackend"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["VerazoiBackend"]
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "d61059d1a9f348f0a11849b6ea474d88"
+
+[vars]
+ENV = "production"
+
+[[routes]]
+pattern = "api.verazoi.com/*"
+zone_name = "verazoi.com"
