@@ -1,8 +1,7 @@
+import { API_BASE } from "@/lib/config"
 import type { Experiment, ExperimentComparison, FastingSession, FoodImpact, GlucoseReading, GlucoseTrendPoint, GoalProgress, InsightPreviewResponse, InsightResponse, StabilityScore, StabilityTrendPoint, TimelineEvent, WearableStatus, WearableSyncPayload } from "./api-types"
 
 export type { Experiment, ExperimentComparison, FastingSession, FoodImpact, GlucoseReading, GlucoseTrendPoint, GoalProgress, InsightPreviewResponse, InsightResponse, StabilityScore, StabilityTrendPoint, TimelineEvent, WearableStatus, WearableSyncPayload } from "./api-types"
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"
 
 type RequestOptions = {
   method?: string

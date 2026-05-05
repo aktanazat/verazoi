@@ -1,6 +1,6 @@
 import { FastingStatus } from "@/components/log-async-widgets"
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"
+import { API_BASE } from "@/lib/config"
 const targets = [12, 16, 18, 24]
 
 export default function FastingPage() {
