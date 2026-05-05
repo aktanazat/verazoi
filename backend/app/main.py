@@ -22,15 +22,8 @@ from app.routes import (
 async def lifespan(app: FastAPI):
     log.info("Starting Verazoi API (env=%s)", settings.env)
 
-    pool = await get_pool()
-
-    async with pool.acquire() as conn:
-        await conn.fetchval("SELECT 1")
-    log.info("Database connected")
-
-    # Redis is optional - get_redis() logs its own status
-    await get_redis()
-
+    # Keep startup non-blocking so Render can serve /health even while external
+    # services are cold-starting or degraded. Route handlers initialize DB/Redis lazily.
     yield
 
     log.info("Shutting down")
@@ -83,16 +76,18 @@ app.include_router(cgm.router, prefix=prefix)
 async def health():
     checks = {"api": "ok"}
     try:
-        pool = await get_pool()
+        pool = await asyncio.wait_for(get_pool(), timeout=5)
         async with pool.acquire() as conn:
-            await conn.fetchval("SELECT 1")
+            await asyncio.wait_for(conn.fetchval("SELECT 1"), timeout=5)
         checks["database"] = "ok"
     except Exception:
         checks["database"] = "error"
 
     try:
-        r = await get_redis()
-        await r.ping()
+        r = await asyncio.wait_for(get_redis(), timeout=5)
+        if r is None:
+            raise RuntimeError("Redis unavailable")
+        await asyncio.wait_for(r.ping(), timeout=5)
         checks["redis"] = "ok"
     except Exception:
         checks["redis"] = "error"
