@@ -40,14 +40,19 @@ async def create_medication_form(
         return RedirectResponse(frontend_redirect("/app/log/medications?form_error=invalid"), status_code=303)
     if dose_value < 0:
         return RedirectResponse(frontend_redirect("/app/log/medications?form_error=range"), status_code=303)
+    name = str(form.get("name", "")).strip()
+    dose_unit = str(form.get("dose_unit", "mg"))
+    timing = str(form.get("timing", "morning"))
+    if not name or len(name) > 120 or dose_unit not in {"units", "mg"} or timing not in {"before_meal", "with_meal", "after_meal", "bedtime", "morning", "other"}:
+        return RedirectResponse(frontend_redirect("/app/log/medications?form_error=invalid"), status_code=303)
     await db.execute(
         """INSERT INTO medications (user_id, name, dose_value, dose_unit, timing, notes)
            VALUES ($1::uuid, $2, $3, $4, $5, $6)""",
         user_id,
-        str(form.get("name", "")),
+        name,
         dose_value,
-        str(form.get("dose_unit", "mg")),
-        str(form.get("timing", "morning")),
+        dose_unit,
+        timing,
         str(form.get("notes", "")),
     )
     return RedirectResponse(frontend_redirect("/app/log/medications"), status_code=303)

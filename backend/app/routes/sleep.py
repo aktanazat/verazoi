@@ -38,6 +38,8 @@ async def create_sleep_form(
     if hours < 0 or hours > 24:
         return RedirectResponse(frontend_redirect("/app/log/sleep?form_error=range"), status_code=303)
     quality = str(form.get("quality", "good"))
+    if quality not in {"poor", "fair", "good", "great"}:
+        return RedirectResponse(frontend_redirect("/app/log/sleep?form_error=invalid"), status_code=303)
     await db.execute(
         """INSERT INTO sleep_entries (user_id, hours, quality)
            VALUES ($1::uuid, $2, $3)""",

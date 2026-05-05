@@ -37,8 +37,12 @@ async def create_activity_form(
         return RedirectResponse(frontend_redirect("/app/log/activity?form_error=invalid"), status_code=303)
     if duration < 1 or duration > 600:
         return RedirectResponse(frontend_redirect("/app/log/activity?form_error=range"), status_code=303)
-    activity_type = str(form.get("activity_type", "Walking"))
+    activity_type = str(form.get("activity_type", "Walking")).strip()
+    if not activity_type or len(activity_type) > 80:
+        return RedirectResponse(frontend_redirect("/app/log/activity?form_error=invalid"), status_code=303)
     intensity = str(form.get("intensity", "Moderate"))
+    if intensity not in {"Light", "Moderate", "Intense"}:
+        return RedirectResponse(frontend_redirect("/app/log/activity?form_error=invalid"), status_code=303)
     await db.execute(
         """INSERT INTO activities (user_id, activity_type, duration, intensity)
            VALUES ($1::uuid, $2, $3, $4)""",

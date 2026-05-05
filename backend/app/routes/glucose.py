@@ -38,6 +38,8 @@ async def create_reading_form(
     if value < 20 or value > 500:
         return RedirectResponse(frontend_redirect("/app/log/glucose?form_error=range"), status_code=303)
     timing = str(form.get("timing", "fasting"))
+    if timing not in {"fasting", "before", "after"}:
+        return RedirectResponse(frontend_redirect("/app/log/glucose?form_error=invalid"), status_code=303)
     await db.execute(
         """INSERT INTO glucose_readings (user_id, value, timing)
            VALUES ($1::uuid, $2, $3)""",

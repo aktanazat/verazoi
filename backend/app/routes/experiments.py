@@ -34,13 +34,15 @@ async def create_experiment_form(
     db: asyncpg.Connection = Depends(get_db),
 ):
     form = await request.form()
+    name = str(form.get("name", "")).strip()
+    food_a = str(form.get("food_a", "")).strip()
+    food_b = str(form.get("food_b", "")).strip()
+    if not name or not food_a or not food_b or max(len(name), len(food_a), len(food_b)) > 120:
+        return RedirectResponse(frontend_redirect("/app/log/experiments?form_error=invalid"), status_code=303)
     await db.execute(
         """INSERT INTO experiments (user_id, name, food_a, food_b)
            VALUES ($1::uuid, $2, $3, $4)""",
-        user_id,
-        str(form.get("name", "")),
-        str(form.get("food_a", "")),
-        str(form.get("food_b", "")),
+        user_id, name, food_a, food_b,
     )
     return RedirectResponse(frontend_redirect("/app/log/experiments"), status_code=303)
 

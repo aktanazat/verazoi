@@ -35,14 +35,16 @@ async def create_meal_form(
     custom_food = str(form.get("custom_food", ""))
     if custom_food.strip():
         entries.append(custom_food.strip())
-    entries = list(dict.fromkeys(entries))
-    if not entries:
+    entries = list(dict.fromkeys(entries))[:20]
+    meal_type = str(form.get("meal_type", "Breakfast"))
+    notes = str(form.get("notes", ""))[:2000]
+    if not entries or any(len(food) > 120 for food in entries) or meal_type not in {"Breakfast", "Lunch", "Dinner", "Snack"}:
         return RedirectResponse(frontend_redirect("/app/log/meals?meal_error=missing"), status_code=303)
 
     await db.execute(
         """INSERT INTO meals (user_id, meal_type, foods, notes)
            VALUES ($1::uuid, $2, $3, $4)""",
-        user_id, str(form.get("meal_type", "Breakfast")), entries, str(form.get("notes", "")),
+        user_id, meal_type, entries, notes,
     )
     return RedirectResponse(frontend_redirect("/app/log/meals"), status_code=303)
 
