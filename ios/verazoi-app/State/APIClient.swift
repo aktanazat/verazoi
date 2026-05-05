@@ -10,11 +10,7 @@ enum APIError: Error {
 actor APIClient {
     static let shared = APIClient()
 
-    #if DEBUG
-    private let baseURL = "http://localhost:8000/api/v1"
-    #else
-    private let baseURL = "https://verazoi-api.onrender.com/api/v1"
-    #endif
+    private let baseURL = "https://api.verazoi.com/api/v1"
 
     private var token: String?
     private var refreshToken: String?
