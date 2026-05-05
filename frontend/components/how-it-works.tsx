@@ -1,6 +1,3 @@
-"use client"
-
-import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 
 function SyncGraphic() {
   return (
@@ -113,7 +110,7 @@ const steps = [
 ]
 
 export function HowItWorks() {
-  const { ref, visible } = useScrollReveal(0.1)
+  const visible = true
 
   return (
     <section id="how-it-works" className="relative px-6 py-16 lg:py-20">
@@ -123,7 +120,7 @@ export function HowItWorks() {
         <div className="absolute -left-20 top-1/3 h-[400px] w-[400px] rounded-full bg-primary/[0.03] blur-[100px]" />
       </div>
 
-      <div ref={ref} className="mx-auto max-w-screen-lg">
+      <div className="mx-auto max-w-screen-lg">
         <div
           className={`text-center transition-all duration-700 ease-out ${
             visible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"

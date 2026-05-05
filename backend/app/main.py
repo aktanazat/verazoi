@@ -13,7 +13,7 @@ from app.routes import (
     auth, glucose, meals, activity, sleep, timeline,
     stability, sync, medications, goals, trends,
     correlations, insights, export,
-    recognize, playbook, experiments, fasting, med_schedules,
+    recognize, playbook, experiments, fasting, med_schedules, cgm,
 )
 
 
@@ -75,6 +75,7 @@ app.include_router(playbook.router, prefix=prefix)
 app.include_router(experiments.router, prefix=prefix)
 app.include_router(fasting.router, prefix=prefix)
 app.include_router(med_schedules.router, prefix=prefix)
+app.include_router(cgm.router, prefix=prefix)
 
 
 @app.get("/health")

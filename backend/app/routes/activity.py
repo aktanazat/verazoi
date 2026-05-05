@@ -1,10 +1,18 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
+from fastapi.responses import RedirectResponse
 import asyncpg
 from app.database import get_db
 from app.models.schemas import ActivityCreate, ActivityResponse
 from app.services.auth import get_current_user
 
 router = APIRouter(prefix="/activities", tags=["activities"])
+
+
+def _redirect_to_origin(request: Request, path: str) -> str:
+    origin = request.headers.get("origin")
+    if origin:
+        return f"{origin.rstrip('/')}{path}"
+    return path
 
 
 @router.post("", response_model=ActivityResponse, status_code=201)
@@ -20,6 +28,29 @@ async def create_activity(
         user_id, body.activity_type, body.duration, body.intensity,
     )
     return ActivityResponse(**dict(row))
+
+
+@router.post("/form", include_in_schema=False)
+async def create_activity_form(
+    request: Request,
+    user_id: str = Depends(get_current_user),
+    db: asyncpg.Connection = Depends(get_db),
+):
+    form = await request.form()
+    try:
+        duration = int(str(form.get("duration", "")))
+    except ValueError:
+        return RedirectResponse(_redirect_to_origin(request, "/app/log/activity?form_error=invalid"), status_code=303)
+    if duration < 1 or duration > 600:
+        return RedirectResponse(_redirect_to_origin(request, "/app/log/activity?form_error=range"), status_code=303)
+    activity_type = str(form.get("activity_type", "Walking"))
+    intensity = str(form.get("intensity", "Moderate"))
+    await db.execute(
+        """INSERT INTO activities (user_id, activity_type, duration, intensity)
+           VALUES ($1::uuid, $2, $3, $4)""",
+        user_id, activity_type, duration, intensity,
+    )
+    return RedirectResponse(_redirect_to_origin(request, "/app/log/activity"), status_code=303)
 
 
 @router.get("", response_model=list[ActivityResponse])

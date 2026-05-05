@@ -1,4 +1,3 @@
-import anthropic
 from datetime import date, timedelta
 import asyncpg
 from app.config import settings
@@ -84,6 +83,8 @@ Medications ({len(medications)}):
 
 
 async def generate_insight_from_prompt(user_prompt: str) -> str:
+    import anthropic
+
     client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
     response = await client.messages.create(
         model="claude-sonnet-4-5-20250514",

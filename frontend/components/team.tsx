@@ -1,9 +1,5 @@
-"use client"
-
 import Image from "next/image"
 import type { CSSProperties } from "react"
-import { Linkedin, Mail } from "lucide-react"
-import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import desireePic from "@/public/images/team/desiree.png"
 import roshniPic from "@/public/images/team/roshni.png"
 import adamPic from "@/public/images/team/adam.png"
@@ -136,7 +132,7 @@ function PersonCard({ person }: { person: Person }) {
           className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/5 hover:text-foreground"
           aria-label={`Email ${person.name}`}
         >
-          <Mail className="h-3.5 w-3.5" strokeWidth={1.6} />
+          <span className="text-[11px] font-medium uppercase tracking-[0.08em]">Email</span>
         </a>
         <a
           href={person.linkedin}
@@ -145,7 +141,7 @@ function PersonCard({ person }: { person: Person }) {
           className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/5 hover:text-foreground"
           aria-label={`${person.name} on LinkedIn`}
         >
-          <Linkedin className="h-3.5 w-3.5" strokeWidth={1.6} />
+          <span className="text-[11px] font-medium uppercase tracking-[0.08em]">In</span>
         </a>
       </div>
     </div>
@@ -153,7 +149,7 @@ function PersonCard({ person }: { person: Person }) {
 }
 
 export function Team() {
-  const { ref, visible } = useScrollReveal(0.1)
+  const visible = true
 
   return (
     <section id="team" className="relative px-6 py-20 lg:py-28">
@@ -163,7 +159,7 @@ export function Team() {
         <div className="absolute -right-24 bottom-1/4 h-[360px] w-[360px] rounded-full bg-primary/[0.04] blur-[100px]" />
       </div>
 
-      <div ref={ref} className="mx-auto max-w-screen-lg">
+      <div className="mx-auto max-w-screen-lg">
         <div
           className={`text-center transition-all duration-700 ease-out ${
             visible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"

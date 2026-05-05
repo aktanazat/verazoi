@@ -2,8 +2,8 @@
 const nextConfig = {
   output: "export",
   trailingSlash: true,
-  typescript: {
-    ignoreBuildErrors: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
   },
   images: {
     unoptimized: true,

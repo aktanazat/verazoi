@@ -2,14 +2,9 @@ import hashlib
 import secrets
 from datetime import datetime, timedelta, timezone
 
-import bcrypt
-from jose import jwt, JWTError
-from fastapi import Depends, HTTPException, Request, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import HTTPException, Request, status
 
 from app.config import settings
-
-security = HTTPBearer(auto_error=False)
 
 ACCESS_TOKEN_EXPIRE = timedelta(minutes=settings.jwt_expire_minutes)
 REFRESH_TOKEN_EXPIRE = timedelta(days=30)
@@ -19,14 +14,20 @@ COOKIE_NAME = "verazoi_refresh"
 
 
 def hash_password(password: str) -> str:
+    import bcrypt
+
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 
 def verify_password(plain: str, hashed: str) -> bool:
+    import bcrypt
+
     return bcrypt.checkpw(plain.encode(), hashed.encode())
 
 
 def create_access_token(user_id: str) -> str:
+    from jose import jwt
+
     expire = datetime.now(timezone.utc) + ACCESS_TOKEN_EXPIRE
     return jwt.encode(
         {"sub": user_id, "exp": expire, "type": "access"},
@@ -52,6 +53,8 @@ def hash_token(raw: str) -> str:
 
 
 def decode_token(token: str) -> str:
+    from jose import JWTError, jwt
+
     try:
         payload = jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
         user_id: str = payload.get("sub")
@@ -63,13 +66,11 @@ def decode_token(token: str) -> str:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 
-async def get_current_user(
-    request: Request,
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> str:
+async def get_current_user(request: Request) -> str:
     token = None
-    if credentials:
-        token = credentials.credentials
+    auth_header = request.headers.get("authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header.removeprefix("Bearer ").strip()
     if not token:
         token = request.cookies.get("verazoi_access")
     if not token:

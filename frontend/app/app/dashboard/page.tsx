@@ -1,10 +1,5 @@
-"use client"
-
-import { StabilityScore } from "@/components/stability-score"
-import { SpikeRisk } from "@/components/spike-risk"
-import { GoalProgress } from "@/components/goal-progress"
-import { DailyTimeline } from "@/components/daily-timeline"
-import { WearableDevice } from "@/components/wearable-device"
+import { DailyTimeline, StabilityScore, SpikeRisk } from "@/components/stability-score"
+import { GoalProgress, WearableDevice } from "@/components/dashboard-status-widgets"
 import { ExportButton } from "@/components/export-button"
 
 export default function DashboardPage() {

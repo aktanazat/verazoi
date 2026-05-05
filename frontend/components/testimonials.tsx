@@ -1,6 +1,3 @@
-"use client"
-
-import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 
 const testimonials = [
   {
@@ -21,7 +18,7 @@ const testimonials = [
 ]
 
 export function Testimonials() {
-  const { ref, visible } = useScrollReveal(0.1)
+  const visible = true
 
   return (
     <section id="testimonials" className="relative px-6 py-16 lg:py-20">
@@ -30,7 +27,7 @@ export function Testimonials() {
         <div className="absolute -right-20 top-1/3 h-[400px] w-[400px] rounded-full bg-primary/[0.04] blur-[120px]" />
       </div>
 
-      <div ref={ref} className="mx-auto max-w-screen-lg">
+      <div className="mx-auto max-w-screen-lg">
         <div
           className={`text-center transition-all duration-700 ease-out ${
             visible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"

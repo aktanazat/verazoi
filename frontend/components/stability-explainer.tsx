@@ -1,6 +1,3 @@
-"use client"
-
-import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 
 const inputs = [
   "CGM glucose variability",
@@ -10,7 +7,7 @@ const inputs = [
 ]
 
 export function StabilityExplainer() {
-  const { ref, visible } = useScrollReveal(0.1)
+  const visible = true
 
   return (
     <section id="stability-score" className="relative px-6 py-16 lg:py-20">
@@ -19,7 +16,7 @@ export function StabilityExplainer() {
         <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.06] blur-[120px]" />
       </div>
 
-      <div ref={ref} className="mx-auto max-w-screen-lg">
+      <div className="mx-auto max-w-screen-lg">
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
           <div
             className={`transition-all duration-700 ease-out ${

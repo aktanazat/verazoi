@@ -1,11 +1,12 @@
 """Dexcom Share API client."""
-import httpx
 
 DEXCOM_BASE = "https://share2.dexcom.com/ShareWebServices/Services"
 DEXCOM_APP_ID = "d89443d2-327c-4a6f-89e5-496bbb0317db"
 
 
 async def authenticate(username: str, password: str) -> str:
+    import httpx
+
     async with httpx.AsyncClient() as client:
         res = await client.post(
             f"{DEXCOM_BASE}/General/LoginPublisherAccountByName",
@@ -21,6 +22,8 @@ async def authenticate(username: str, password: str) -> str:
 
 
 async def fetch_readings(session_id: str, minutes: int = 1440, max_count: int = 288) -> list[dict]:
+    import httpx
+
     async with httpx.AsyncClient() as client:
         res = await client.post(
             f"{DEXCOM_BASE}/Publisher/ReadPublisherLatestGlucoseValues",

@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi.responses import RedirectResponse
 import asyncpg
 from app.database import get_db
 from app.models.schemas import (
@@ -8,6 +9,13 @@ from app.models.schemas import (
 from app.services.auth import get_current_user
 
 router = APIRouter(prefix="/experiments", tags=["experiments"])
+
+
+def _redirect_to_origin(request: Request, path: str) -> str:
+    origin = request.headers.get("origin")
+    if origin:
+        return f"{origin.rstrip('/')}{path}"
+    return path
 
 
 @router.post("", response_model=ExperimentResponse, status_code=201)
@@ -23,6 +31,24 @@ async def create_experiment(
         user_id, body.name, body.food_a, body.food_b,
     )
     return ExperimentResponse(**dict(row))
+
+
+@router.post("/form", include_in_schema=False)
+async def create_experiment_form(
+    request: Request,
+    user_id: str = Depends(get_current_user),
+    db: asyncpg.Connection = Depends(get_db),
+):
+    form = await request.form()
+    await db.execute(
+        """INSERT INTO experiments (user_id, name, food_a, food_b)
+           VALUES ($1::uuid, $2, $3, $4)""",
+        user_id,
+        str(form.get("name", "")),
+        str(form.get("food_a", "")),
+        str(form.get("food_b", "")),
+    )
+    return RedirectResponse(_redirect_to_origin(request, "/app/log/experiments"), status_code=303)
 
 
 @router.get("", response_model=list[ExperimentResponse])

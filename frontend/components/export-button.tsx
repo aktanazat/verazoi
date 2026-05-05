@@ -1,36 +1,19 @@
-"use client"
-
-import { useState } from "react"
-import { Download } from "lucide-react"
-import { exportCSV } from "@/lib/api"
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"
 
 export function ExportButton({ fromDate, toDate }: { fromDate?: string; toDate?: string }) {
-  const [exporting, setExporting] = useState(false)
-
-  const handleExport = async () => {
-    setExporting(true)
-    try {
-      const blob = await exportCSV(fromDate, toDate)
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `verazoi-export-${new Date().toISOString().slice(0, 10)}.csv`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch {}
-    setExporting(false)
-  }
+  const params = new URLSearchParams()
+  if (fromDate) params.set("from_date", fromDate)
+  if (toDate) params.set("to_date", toDate)
+  const query = params.toString()
+  const href = `${API_BASE}/export/csv${query ? `?${query}` : ""}`
 
   return (
-    <button
-      onClick={handleExport}
-      disabled={exporting}
-      className="flex items-center gap-1.5 border border-border px-3 py-1.5 text-[11px] tracking-[0.04em] text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground disabled:opacity-50"
+    <a
+      href={href}
+      className="flex items-center gap-1.5 border border-border px-3 py-1.5 text-[11px] tracking-[0.04em] text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
     >
-      <Download className="h-3 w-3" strokeWidth={1.5} />
-      {exporting ? "Exporting..." : "Export CSV"}
-    </button>
+      <span aria-hidden="true">↓</span>
+      Export CSV
+    </a>
   )
 }

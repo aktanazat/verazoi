@@ -1,9 +1,3 @@
-"use client"
-
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
-import { useScrollReveal } from "@/hooks/use-scroll-reveal"
-
 const questions = [
   {
     q: "What CGMs does Verazoi support?",
@@ -31,58 +25,23 @@ const questions = [
   },
 ]
 
-function FaqItem({
-  q,
-  a,
-  open,
-  onClick,
-  delay,
-  visible,
-}: {
-  q: string
-  a: string
-  open: boolean
-  onClick: () => void
-  delay: number
-  visible: boolean
-}) {
+function FaqItem({ q, a, defaultOpen = false }: { q: string; a: string; defaultOpen?: boolean }) {
   return (
-    <div
-      className={`border-b border-border/50 transition-all duration-700 ease-out ${
-        visible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-      }`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      <button
-        onClick={onClick}
-        className="flex w-full items-center justify-between py-5 text-left"
-      >
+    <details className="group border-b border-border/50" open={defaultOpen}>
+      <summary className="flex cursor-pointer list-none items-center justify-between py-5 text-left [&::-webkit-details-marker]:hidden">
         <span className="pr-4 text-[15px] text-foreground">{q}</span>
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 text-muted-foreground/40 transition-transform duration-300 ${
-            open ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-      <div
-        className={`grid transition-all duration-300 ease-out ${
-          open ? "grid-rows-[1fr] pb-5" : "grid-rows-[0fr]"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <p className="text-[14px] leading-relaxed text-muted-foreground">
-            {a}
-          </p>
-        </div>
+        <span className="text-[18px] leading-none text-muted-foreground/40 transition-transform duration-300 group-open:rotate-45">+</span>
+      </summary>
+      <div className="pb-5">
+        <p className="text-[14px] leading-relaxed text-muted-foreground">
+          {a}
+        </p>
       </div>
-    </div>
+    </details>
   )
 }
 
 export function FAQ() {
-  const { ref, visible } = useScrollReveal(0.1)
-  const [openIndex, setOpenIndex] = useState<number>(0)
-
   return (
     <section id="faq" className="relative px-6 py-16 lg:py-20">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -90,13 +49,9 @@ export function FAQ() {
         <div className="absolute right-0 top-1/3 h-[400px] w-[400px] rounded-full bg-primary/[0.03] blur-[120px]" />
       </div>
 
-      <div ref={ref} className="mx-auto max-w-screen-lg">
+      <div className="mx-auto max-w-screen-lg">
         <div className="grid gap-16 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
-          <div
-            className={`transition-all duration-700 ease-out ${
-              visible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-            }`}
-          >
+          <div>
             <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-primary/60">
               FAQ
             </p>
@@ -114,10 +69,7 @@ export function FAQ() {
                 key={item.q}
                 q={item.q}
                 a={item.a}
-                open={openIndex === i}
-                onClick={() => setOpenIndex(openIndex === i ? -1 : i)}
-                delay={200 + i * 60}
-                visible={visible}
+                defaultOpen={i === 0}
               />
             ))}
           </div>

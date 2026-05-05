@@ -1,7 +1,4 @@
-"use client"
-
 import Image from "next/image"
-import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import cgmMonitor from "@/public/images/cgm-monitor.jpg"
 import cgmBreakfast from "@/public/images/cgm-breakfast.jpg"
 import cgmData from "@/public/images/cgm-data.jpg"
@@ -22,7 +19,7 @@ const images = [
 ]
 
 export function Lifestyle() {
-  const { ref, visible } = useScrollReveal(0.15)
+  const visible = true
 
   return (
     <section className="relative px-6 py-16 lg:py-20">
@@ -32,7 +29,7 @@ export function Lifestyle() {
         <div className="absolute -right-20 bottom-1/4 h-[350px] w-[350px] rounded-full bg-primary/[0.03] blur-[100px]" />
       </div>
 
-      <div ref={ref} className="mx-auto max-w-screen-lg">
+      <div className="mx-auto max-w-screen-lg">
         <div
           className={`mb-16 text-center transition-all duration-700 ease-out ${
             visible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"

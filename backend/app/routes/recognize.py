@@ -1,6 +1,3 @@
-import base64
-import json
-import anthropic
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from app.config import settings
 from app.services.auth import get_current_user
@@ -19,6 +16,9 @@ async def recognize_food(
     content = await photo.read()
     if len(content) > 10 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="Image too large. Max 10MB.")
+
+    import base64
+    import anthropic
 
     media_type = photo.content_type or "image/jpeg"
     b64 = base64.b64encode(content).decode()
@@ -45,6 +45,8 @@ async def recognize_food(
     raw = response.content[0].text.strip()
     if raw.startswith("```"):
         raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+    import json
 
     foods = json.loads(raw)
     return {"foods": foods}

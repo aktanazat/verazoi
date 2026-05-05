@@ -1,34 +1,16 @@
-"use client"
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"
 
-import { useState } from "react"
-import { useAppData } from "@/contexts/app-data-context"
-import { formatTime } from "@/lib/utils"
+const qualities = ["poor", "fair", "good", "great"] as const
 
 export default function SleepLogPage() {
-  const { state, addSleep } = useAppData()
-  const [sleepHours, setSleepHours] = useState("")
-  const [sleepQuality, setSleepQuality] = useState<"poor" | "fair" | "good" | "great">("good")
-  const [saved, setSaved] = useState(false)
-  const [saving, setSaving] = useState(false)
-
-  const handleSave = async () => {
-    if (!sleepHours || saving) return
-    setSaving(true)
-    await addSleep(Number(sleepHours), sleepQuality)
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => { setSaved(false); setSleepHours("") }, 2000)
-  }
-
   return (
-    <>
+    <form action={`${API_BASE}/sleep/form`} method="post">
       <div className="mb-5 flex justify-end">
         <button
-          onClick={handleSave}
-          disabled={!sleepHours || saving}
-          className="border border-foreground bg-foreground px-6 py-2 text-[12px] font-medium tracking-[0.04em] text-background transition-opacity hover:opacity-85 disabled:opacity-30"
+          type="submit"
+          className="border border-foreground bg-foreground px-6 py-2 text-[12px] font-medium tracking-[0.04em] text-background transition-opacity hover:opacity-85"
         >
-          {saved ? "Saved" : saving ? "..." : "Save sleep"}
+          Save sleep
         </button>
       </div>
 
@@ -38,9 +20,11 @@ export default function SleepLogPage() {
           <div className="mt-2 flex items-center gap-3">
             <input
               type="number"
+              name="hours"
               step="0.5"
-              value={sleepHours}
-              onChange={(e) => setSleepHours(e.target.value)}
+              min={0}
+              max={24}
+              required
               placeholder="0"
               className="w-full bg-transparent font-serif text-[32px] font-light leading-none text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
             />
@@ -50,57 +34,32 @@ export default function SleepLogPage() {
           <div className="mt-5">
             <p className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">Quality</p>
             <div className="mt-2 grid grid-cols-4 gap-2">
-              {(["poor", "fair", "good", "great"] as const).map((q) => (
-                <button
-                  key={q}
-                  onClick={() => setSleepQuality(q)}
-                  className={`border py-2.5 text-[12px] capitalize tracking-[0.04em] transition-colors ${
-                    sleepQuality === q
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border text-muted-foreground hover:border-foreground/30"
-                  }`}
-                >
-                  {q}
-                </button>
+              {qualities.map((quality) => (
+                <label key={quality} className="cursor-pointer">
+                  <input
+                    type="radio"
+                    name="quality"
+                    value={quality}
+                    defaultChecked={quality === "good"}
+                    className="peer sr-only"
+                  />
+                  <span className="block border border-border py-2.5 text-center text-[12px] capitalize tracking-[0.04em] text-muted-foreground transition-colors hover:border-foreground/30 peer-checked:border-foreground peer-checked:bg-foreground peer-checked:text-background">
+                    {quality}
+                  </span>
+                </label>
               ))}
             </div>
           </div>
         </div>
 
         <div className="border border-border p-6">
-          {(() => {
-            const sleepEntries = state.timeline.filter((e) => e.type === "sleep")
-            return (
-              <>
-                <div className="flex items-center justify-between">
-                  <p className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">Recent sleep</p>
-                  <p className="text-[12px] text-muted-foreground/80">
-                    {sleepEntries.length} logged
-                  </p>
-                </div>
-                <div className="mt-4">
-                  {sleepEntries.length === 0 ? (
-                    <div className="flex flex-col items-center py-8 text-center">
-                      <p className="text-[13px] text-muted-foreground/60">No sleep logged</p>
-                      <p className="mt-1.5 text-[12px] text-muted-foreground/40">Log your sleep to track rest and recovery.</p>
-                    </div>
-                  ) : (
-                    sleepEntries.map((e, i) => (
-                <div key={i} className="flex items-center justify-between border-b border-border py-3 last:border-0">
-                  <div>
-                    <p className="text-[13px] text-foreground">{e.label}</p>
-                    <p className="mt-0.5 text-[12px] text-muted-foreground">{e.value}</p>
-                  </div>
-                  <span className="text-[11px] text-muted-foreground/70">{formatTime(e.recorded_at)}</span>
-                </div>
-                    ))
-                  )}
-                </div>
-              </>
-            )
-          })()}
+          <p className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">Recent sleep</p>
+          <div className="mt-4 flex flex-col items-center py-8 text-center">
+            <p className="text-[13px] text-muted-foreground/60">Sleep saves instantly.</p>
+            <p className="mt-1.5 text-[12px] text-muted-foreground/40">Return to the dashboard timeline to review your latest rest entry.</p>
+          </div>
         </div>
       </div>
-    </>
+    </form>
   )
 }

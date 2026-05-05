@@ -1,23 +1,8 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowDown } from "lucide-react"
-import { basePath } from "@/lib/utils"
+import { basePath } from "@/lib/assets"
 
 export function Hero() {
-  const [phase, setPhase] = useState<"intro" | "shrink" | "brand">("intro")
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setPhase("shrink"), 1400)
-    const t2 = setTimeout(() => setPhase("brand"), 2000)
-    return () => {
-      clearTimeout(t1)
-      clearTimeout(t2)
-    }
-  }, [])
-
   return (
     <section className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-6 pt-20 lg:min-h-[78dvh]">
       <div className="pointer-events-none absolute inset-0">
@@ -31,13 +16,7 @@ export function Hero() {
       <div className="relative mx-auto max-w-4xl text-center">
         {/* Phase 1 & 2: "This is metabolic intelligence" shrinks away */}
         <div
-          className={`transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            phase === "intro"
-              ? "scale-100 opacity-100"
-              : phase === "shrink"
-                ? "scale-75 opacity-0 blur-sm"
-                : "pointer-events-none absolute inset-0 scale-50 opacity-0 blur-md"
-          }`}
+          className="hero-intro-animation"
         >
           <h1 className="font-serif text-[clamp(3.5rem,8vw,6.5rem)] font-light leading-[0.95] tracking-tight">
             <span className="text-gradient">This is metabolic</span>
@@ -48,11 +27,7 @@ export function Hero() {
 
         {/* Phase 3: Verazoi brand emerges */}
         <div
-          className={`transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            phase === "brand"
-              ? "translate-y-0 scale-100 opacity-100"
-              : "pointer-events-none translate-y-8 scale-110 opacity-0"
-          }`}
+          className="hero-brand-animation"
         >
           <div>
             <Image src={`${basePath}/images/verazoi_logo_top.svg`} alt="Verazoi" width={420} height={140} className="mx-auto block h-auto w-[280px] md:w-[320px]" />
@@ -81,12 +56,10 @@ export function Hero() {
       </div>
 
       <div
-        className={`absolute inset-x-0 bottom-10 flex justify-center transition-all duration-1000 delay-700 ${
-          phase === "brand" ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-        }`}
+        className="hero-arrow-animation absolute inset-x-0 bottom-10 flex justify-center"
       >
         <a href="#overview" className="group">
-          <ArrowDown className="h-4 w-4 animate-bounce text-muted-foreground/40 transition-colors group-hover:text-muted-foreground" />
+          <span className="inline-block animate-bounce text-[18px] text-muted-foreground/40 transition-colors group-hover:text-muted-foreground">↓</span>
         </a>
       </div>
     </section>

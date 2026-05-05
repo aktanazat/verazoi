@@ -1,9 +1,6 @@
-"use client"
-
-import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 
 export function OurStory() {
-  const { ref, visible } = useScrollReveal(0.15)
+  const visible = true
 
   return (
     <section id="our-story" className="relative px-6 py-16 lg:py-20">
@@ -12,7 +9,7 @@ export function OurStory() {
         <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[120px]" />
       </div>
 
-      <div ref={ref} className="mx-auto max-w-screen-lg">
+      <div className="mx-auto max-w-screen-lg">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
           <div
             className={`transition-all duration-700 ease-out ${

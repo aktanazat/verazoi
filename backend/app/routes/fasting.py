@@ -1,11 +1,19 @@
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi.responses import RedirectResponse
 import asyncpg
 from app.database import get_db
 from app.models.schemas import FastingStartRequest, FastingSessionResponse, GlucoseResponse
 from app.services.auth import get_current_user
 
 router = APIRouter(prefix="/fasting", tags=["fasting"])
+
+
+def _redirect_to_origin(request: Request, path: str) -> str:
+    origin = request.headers.get("origin")
+    if origin:
+        return f"{origin.rstrip('/')}{path}"
+    return path
 
 
 @router.post("/start", status_code=201)
@@ -32,6 +40,30 @@ async def start_fast(
     )
 
 
+@router.post("/start/form", include_in_schema=False)
+async def start_fast_form(
+    request: Request,
+    user_id: str = Depends(get_current_user),
+    db: asyncpg.Connection = Depends(get_db),
+):
+    form = await request.form()
+    try:
+        target_hours = int(str(form.get("target_hours", "16")))
+    except ValueError:
+        target_hours = 16
+    target_hours = min(max(target_hours, 1), 72)
+    await db.execute(
+        "UPDATE fasting_sessions SET ended_at = now() WHERE user_id = $1::uuid AND ended_at IS NULL",
+        user_id,
+    )
+    await db.execute(
+        """INSERT INTO fasting_sessions (user_id, started_at, target_hours)
+           VALUES ($1::uuid, now(), $2)""",
+        user_id, target_hours,
+    )
+    return RedirectResponse(_redirect_to_origin(request, "/app/log/fasting"), status_code=303)
+
+
 @router.post("/end")
 async def end_fast(
     user_id: str = Depends(get_current_user),
@@ -51,6 +83,20 @@ async def end_fast(
         id=row["id"], started_at=row["started_at"], ended_at=row["ended_at"],
         target_hours=row["target_hours"], elapsed_hours=round(elapsed, 2),
     )
+
+
+@router.post("/end/form", include_in_schema=False)
+async def end_fast_form(
+    request: Request,
+    user_id: str = Depends(get_current_user),
+    db: asyncpg.Connection = Depends(get_db),
+):
+    await db.execute(
+        """UPDATE fasting_sessions SET ended_at = now()
+           WHERE user_id = $1::uuid AND ended_at IS NULL""",
+        user_id,
+    )
+    return RedirectResponse(_redirect_to_origin(request, "/app/log/fasting"), status_code=303)
 
 
 @router.get("/active")

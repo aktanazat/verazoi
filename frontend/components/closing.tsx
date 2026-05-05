@@ -1,12 +1,9 @@
-"use client"
-
 import Link from "next/link"
 import Image from "next/image"
-import { useScrollReveal } from "@/hooks/use-scroll-reveal"
-import { basePath } from "@/lib/utils"
+import { basePath } from "@/lib/assets"
 
 export function Closing() {
-  const { ref, visible } = useScrollReveal(0.2)
+  const visible = true
 
   return (
     <section className="relative px-6 py-20 lg:py-28">
@@ -17,7 +14,7 @@ export function Closing() {
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--border)_1px,_transparent_1px)] [background-size:48px_48px] opacity-20" />
 
-      <div ref={ref} className="relative mx-auto max-w-screen-lg text-center">
+      <div className="relative mx-auto max-w-screen-lg text-center">
         <div
           className={`flex justify-center transition-all duration-1000 ease-out ${
             visible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"

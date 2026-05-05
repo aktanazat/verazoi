@@ -1,10 +1,18 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
+from fastapi.responses import RedirectResponse
 import asyncpg
 from app.database import get_db
 from app.models.schemas import SleepCreate, SleepResponse
 from app.services.auth import get_current_user
 
 router = APIRouter(prefix="/sleep", tags=["sleep"])
+
+
+def _redirect_to_origin(request: Request, path: str) -> str:
+    origin = request.headers.get("origin")
+    if origin:
+        return f"{origin.rstrip('/')}{path}"
+    return path
 
 
 @router.post("", response_model=SleepResponse, status_code=201)
@@ -20,6 +28,28 @@ async def create_sleep(
         user_id, body.hours, body.quality,
     )
     return SleepResponse(**dict(row))
+
+
+@router.post("/form", include_in_schema=False)
+async def create_sleep_form(
+    request: Request,
+    user_id: str = Depends(get_current_user),
+    db: asyncpg.Connection = Depends(get_db),
+):
+    form = await request.form()
+    try:
+        hours = float(str(form.get("hours", "")))
+    except ValueError:
+        return RedirectResponse(_redirect_to_origin(request, "/app/log/sleep?form_error=invalid"), status_code=303)
+    if hours < 0 or hours > 24:
+        return RedirectResponse(_redirect_to_origin(request, "/app/log/sleep?form_error=range"), status_code=303)
+    quality = str(form.get("quality", "good"))
+    await db.execute(
+        """INSERT INTO sleep_entries (user_id, hours, quality)
+           VALUES ($1::uuid, $2, $3)""",
+        user_id, hours, quality,
+    )
+    return RedirectResponse(_redirect_to_origin(request, "/app/log/sleep"), status_code=303)
 
 
 @router.get("", response_model=list[SleepResponse])
