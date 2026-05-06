@@ -1,3 +1,7 @@
+"use client"
+
+import { useState } from "react"
+
 function StabilityRing({ score }: { score: number }) {
   const radius = 54
   const circumference = 2 * Math.PI * radius
@@ -216,47 +220,52 @@ const showcaseItems = [
 ]
 
 export function StartupFeaturesShowcase() {
+  const [active, setActive] = useState(0)
+  const item = showcaseItems[active]
+  const Showcase = item.Showcase
+
   return (
-    <div className="mt-12 grid gap-4">
-      {showcaseItems.map(({ id, label, title, body, note, Showcase }, index) => (
-        <details
-          key={id}
-          open={index === 0}
-          className="group rounded-3xl border border-primary/15 bg-card/45 p-5 transition-colors open:bg-card/60 md:p-6"
-        >
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left [&::-webkit-details-marker]:hidden">
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-primary/60">
-                {label}
-              </p>
-              <h3 className="mt-2 font-serif text-[clamp(1.35rem,2.5vw,2rem)] font-light leading-[1.15] text-foreground">
-                {title}
-              </h3>
-            </div>
-            <span className="rounded-full border border-primary/20 px-3 py-1 text-[12px] text-primary transition-colors group-open:bg-primary/10">
-              View
-            </span>
-          </summary>
+    <>
+      <div className="mt-12 flex justify-center">
+        <div className="flex items-center gap-1 rounded-full border border-primary/15 bg-card/70 p-1">
+          {showcaseItems.map((it, i) => (
+            <button
+              key={it.id}
+              type="button"
+              onClick={() => setActive(i)}
+              className={`rounded-full px-5 py-2 text-[12px] tracking-[0.02em] transition-colors ${
+                i === active ? "bg-primary/12 text-primary" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {it.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-          <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-12">
-            <div className="flex flex-col justify-center">
-              <p className="text-[15px] leading-relaxed text-muted-foreground">
-                {body}
-              </p>
-              <div className="mt-6 flex items-center gap-2">
-                <div className="h-1 w-1 rounded-full bg-primary/40" />
-                <p className="text-[13px] italic text-primary/60">
-                  {note}
-                </p>
-              </div>
-            </div>
-
-            <div className="gradient-border card-premium rounded-3xl bg-card/40 p-6 md:p-8">
-              <Showcase />
-            </div>
+      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-12">
+        <div className="flex flex-col justify-center">
+          <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-primary/60">
+            {item.label}
+          </p>
+          <h3 className="mt-2 font-serif text-[clamp(1.5rem,3vw,2.25rem)] font-light leading-[1.15] text-foreground">
+            {item.title}
+          </h3>
+          <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+            {item.body}
+          </p>
+          <div className="mt-6 flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-primary/40" />
+            <p className="text-[13px] italic text-primary/60">
+              {item.note}
+            </p>
           </div>
-        </details>
-      ))}
-    </div>
+        </div>
+
+        <div className="gradient-border card-premium rounded-3xl bg-card/40 p-6 md:p-8">
+          <Showcase />
+        </div>
+      </div>
+    </>
   )
 }
