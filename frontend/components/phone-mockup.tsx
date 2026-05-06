@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { AppScreen } from "@/components/phone-mockup-screens"
 
 export function PhoneMockup() {
@@ -8,7 +9,12 @@ export function PhoneMockup() {
       </div>
       <div className="relative mx-auto max-w-screen-lg">
         <div className="flex flex-col items-center">
-          <div className="group relative isolate" style={{ perspective: "1400px" }}>
+          <Link
+            href="/app/dashboard"
+            aria-label="Open the live dashboard demo"
+            className="group relative isolate block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-4 focus-visible:ring-offset-background rounded-[44px]"
+            style={{ perspective: "1400px" }}
+          >
             <div
               className="relative z-10 transition-transform duration-700 ease-out [transform:rotateY(-4deg)_rotateX(2deg)] [transform-style:preserve-3d] group-hover:[transform:rotateY(-2deg)_rotateX(1deg)_scale(1.015)]"
             >
@@ -25,7 +31,15 @@ export function PhoneMockup() {
                   className="relative h-[580px] overflow-hidden rounded-[38px] bg-background shadow-inner"
                   style={{ transform: "translateZ(16px)" }}
                 >
-                  <AppScreen />
+                  <div className="pointer-events-none absolute inset-0">
+                    <AppScreen />
+                  </div>
+
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center bg-gradient-to-t from-background via-background/85 to-transparent pb-5 pt-12">
+                    <span className="rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-[11px] font-medium tracking-[0.08em] text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+                      Open live demo →
+                    </span>
+                  </div>
                 </div>
 
                 <div
@@ -39,11 +53,11 @@ export function PhoneMockup() {
                 style={{ transform: "translateZ(42px)" }}
               />
             </div>
-          </div>
+          </Link>
 
           <div className="mt-10 text-center">
             <p className="text-[13px] text-muted-foreground">
-Preview the <span className="text-primary">Dashboard</span> experience powered by your metabolic patterns
+              Tap the phone to open the <Link href="/app/dashboard" className="text-primary underline-offset-4 hover:underline">live Dashboard demo</Link>
             </p>
             <p className="mt-2 text-[12px] italic text-primary/50">
               Every recommendation is generated from your personal glucose patterns
