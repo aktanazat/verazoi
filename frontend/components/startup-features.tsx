@@ -8,7 +8,7 @@ export function StartupFeatures() {
         <div className="absolute left-1/2 top-1/2 h-[640px] w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[140px]" />
       </div>
 
-      <div className="mx-auto max-w-screen-lg">
+      <div className="relative z-10 mx-auto max-w-screen-lg">
         <div className="text-center">
           <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-primary/70">
             Inside the App
