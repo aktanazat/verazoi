@@ -3,13 +3,24 @@ import SwiftUI
 enum DesignVariant: String, CaseIterable {
     case classic
     case soft
+    case mercury
 
-    var title: String { self == .soft ? "Soft" : "Classic" }
-    var cardRadius: CGFloat { self == .soft ? 16 : 0 }
-    var pillRadius: CGFloat { self == .soft ? 20 : 0 }
-    var buttonRadius: CGFloat { self == .soft ? 12 : 0 }
-    var cardShadow: CGFloat { self == .soft ? 4 : 0 }
-    var useIconTabs: Bool { self == .soft }
+    var title: String {
+        switch self { case .soft: return "Soft"; case .mercury: return "Mercury"; default: return "Classic" }
+    }
+    var cardRadius: CGFloat {
+        switch self { case .mercury: return 14; case .soft: return 16; default: return 0 }
+    }
+    var pillRadius: CGFloat {
+        switch self { case .mercury: return 999; case .soft: return 20; default: return 0 }
+    }
+    var buttonRadius: CGFloat {
+        switch self { case .mercury: return 999; case .soft: return 12; default: return 0 }
+    }
+    var cardShadow: CGFloat {
+        switch self { case .mercury: return 0; case .soft: return 4; default: return 0 }
+    }
+    var useIconTabs: Bool { self == .soft || self == .mercury }
 }
 
 private struct DesignKey: EnvironmentKey {

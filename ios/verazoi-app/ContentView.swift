@@ -12,10 +12,10 @@ struct ContentView: View {
     @State private var wearableState = WearableState()
     @State private var authState = AuthState()
     @AppStorage("verazoi_onboarding_complete") private var onboardingComplete = false
-    @AppStorage("verazoi_design_variant") private var variantRaw = "classic"
+    @AppStorage("verazoi_design_variant") private var variantRaw = "mercury"
 
     private var design: DesignVariant {
-        DesignVariant(rawValue: variantRaw) ?? .classic
+        DesignVariant(rawValue: variantRaw) ?? .mercury
     }
 
     var body: some View {
@@ -28,15 +28,19 @@ struct ContentView: View {
                 }
             } else if authState.isAuthenticated {
                 TabView(selection: $selectedTab) {
-                    Tab("Dashboard", systemImage: design == .soft ? "heart.text.clipboard.fill" : "chart.bar", value: .dashboard) {
-                        DashboardView()
+                    Tab("Dashboard", systemImage: design.useIconTabs ? "house" : "chart.bar", value: .dashboard) {
+                        if design == .mercury {
+                            MercuryDashboardView()
+                        } else {
+                            DashboardView()
+                        }
                     }
 
-                    Tab("Log", systemImage: design == .soft ? "plus.circle.fill" : "square.and.pencil", value: .log) {
+                    Tab("Log", systemImage: design.useIconTabs ? "plus.circle.fill" : "square.and.pencil", value: .log) {
                         LogTabView()
                     }
 
-                    Tab("Settings", systemImage: design == .soft ? "gearshape.fill" : "gearshape", value: .settings) {
+                    Tab("Settings", systemImage: design.useIconTabs ? "gearshape.fill" : "gearshape", value: .settings) {
                         SettingsView()
                     }
                 }
@@ -49,11 +53,23 @@ struct ContentView: View {
         .environment(appState)
         .environment(wearableState)
         .environment(authState)
-        .onAppear {
+        .task {
             appState.wearable = wearableState
+            #if DEBUG
+            if !authState.isAuthenticated && CommandLine.arguments.contains("-demo") {
+                wearableState.applyDemoData()
+                authState.applyDemoSession()
+            }
+            #endif
         }
         .onChange(of: authState.isAuthenticated) {
             if authState.isAuthenticated {
+                #if DEBUG
+                if authState.token == "demo-token" {
+                    appState.applyDemoData(wearable: wearableState)
+                    return
+                }
+                #endif
                 Task { await appState.fetchFromBackend() }
             }
         }

@@ -112,6 +112,18 @@ struct LoginView: View {
                             }
                             .padding(.top, 4)
                         }
+
+                        #if DEBUG
+                        Button {
+                            auth.applyDemoSession()
+                        } label: {
+                            Text("Preview with demo data")
+                                .font(.system(size: 11))
+                                .foregroundStyle(Color.vMutedForeground.opacity(0.7))
+                                .underline()
+                        }
+                        .padding(.top, 8)
+                        #endif
                     }
                     .padding(.top, 48)
 
