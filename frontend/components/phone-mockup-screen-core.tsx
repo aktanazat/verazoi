@@ -107,19 +107,81 @@ export function RecommendationCard({
   )
 }
 
-export function GlucoseMiniChart({ level }: { level: number }) {
-  const path =
-    level >= 9
-      ? "M0,29 C15,28 25,24 40,22 C55,20 65,24 80,25 C95,26 105,18 120,16 C135,14 145,20 160,22 C175,24 185,20 200,19"
-      : level >= 5
-        ? "M0,30 C15,28 25,20 40,18 C55,16 65,25 80,27 C95,29 105,15 120,12 C135,9 145,22 160,25 C175,28 185,20 200,18"
-        : "M0,32 C15,30 25,18 40,15 C55,12 65,28 80,31 C95,34 105,14 120,10 C135,6 145,24 160,29 C175,33 185,18 200,14"
+export type GlucoseChartInput = {
+  timeframe: Timeframe
+  gain: number
+  walkEnabled: boolean
+  carbEnabled: boolean
+  sleepEnabled: boolean
+  walkMinutes: number
+  carbShiftHours: number
+}
 
+function seededRand(seed: number) {
+  let s = seed >>> 0
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0
+    return s / 0xffffffff
+  }
+}
+
+function buildGlucosePath({
+  timeframe,
+  gain,
+  walkEnabled,
+  carbEnabled,
+  sleepEnabled,
+  walkMinutes,
+  carbShiftHours,
+}: GlucoseChartInput) {
+  const samples = timeframe === "Today" ? 28 : timeframe === "7D" ? 22 : 16
+  const seed =
+    1 +
+    (timeframe === "Today" ? 11 : timeframe === "7D" ? 23 : 41) +
+    (walkEnabled ? 7 : 0) +
+    (carbEnabled ? 13 : 0) +
+    (sleepEnabled ? 19 : 0) +
+    Math.round(walkMinutes) * 3 +
+    Math.round(carbShiftHours * 2) * 5
+  const rand = seededRand(seed)
+
+  const baseline = clamp(30 - gain * 0.6, 14, 34)
+  const volatility =
+    timeframe === "Today" ? 14 : timeframe === "7D" ? 9 : 5
+  const dampen = (walkEnabled ? 0.15 : 0) + (carbEnabled ? 0.18 : 0) + (sleepEnabled ? 0.1 : 0)
+  const swing = volatility * (1 - dampen)
+
+  const ys: number[] = []
+  for (let i = 0; i < samples; i++) {
+    const t = i / (samples - 1)
+    const morning = Math.sin(t * Math.PI * 2 - 0.6) * (carbEnabled ? 0.5 : 1)
+    const dinner = Math.sin(t * Math.PI * 2 + 1.6) * (walkEnabled ? 0.45 : 1)
+    const overnight = Math.cos(t * Math.PI * 4) * 0.25 * (sleepEnabled ? 0.4 : 1)
+    const noise = (rand() - 0.5) * 0.6
+    const value = baseline - swing * 0.55 * morning - swing * 0.6 * dinner + swing * overnight + noise * swing
+    ys.push(clamp(value, 4, 44))
+  }
+
+  const stepX = 200 / (samples - 1)
+  let d = `M0,${ys[0].toFixed(2)}`
+  for (let i = 1; i < samples; i++) {
+    const px = (i - 1) * stepX
+    const cx = px + stepX / 2
+    const x = i * stepX
+    const py = ys[i - 1]
+    const y = ys[i]
+    d += ` C${cx.toFixed(2)},${py.toFixed(2)} ${cx.toFixed(2)},${y.toFixed(2)} ${x.toFixed(2)},${y.toFixed(2)}`
+  }
+  return d
+}
+
+export function GlucoseMiniChart(props: GlucoseChartInput) {
+  const path = buildGlucosePath(props)
   return (
     <svg viewBox="0 0 200 50" className="h-[40px] w-full">
       <defs>
         <linearGradient id="glucoseGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" className="[stop-color:var(--primary)]" stopOpacity="0.12" />
+          <stop offset="0%" className="[stop-color:var(--primary)]" stopOpacity="0.18" />
           <stop offset="100%" className="[stop-color:var(--primary)]" stopOpacity="0" />
         </linearGradient>
       </defs>
@@ -128,12 +190,12 @@ export function GlucoseMiniChart({ level }: { level: number }) {
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
-        className="text-primary/50"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="text-primary/60 transition-[d] duration-500 ease-out"
+        style={{ transition: "d 0.5s ease-out" }}
       />
-      <path
-        d={`${path} L200,50 L0,50 Z`}
-        fill="url(#glucoseGrad)"
-      />
+      <path d={`${path} L200,50 L0,50 Z`} fill="url(#glucoseGrad)" />
     </svg>
   )
 }

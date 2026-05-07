@@ -109,6 +109,15 @@ export function getInsightHistory(limit = 10) {
   return request<InsightResponse[]>(`/insights/history?limit=${limit}`)
 }
 
+export type DemoSeedResponse = {
+  status: string
+  inserted: { glucose: number; meals: number; activities: number; sleep: number; medications: number; timeline: number; wearable: number }
+}
+
+export function seedDemoData() {
+  return request<DemoSeedResponse>("/demo/seed", { method: "POST" })
+}
+
 
 export async function recognizeFood(file: File): Promise<string[]> {
   const formData = new FormData()

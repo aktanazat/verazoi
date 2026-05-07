@@ -22,6 +22,8 @@ function DashboardScreen({
   walkEnabled,
   carbEnabled,
   sleepEnabled,
+  walkMinutes,
+  carbShiftHours,
 }: {
   score: number
   gain: number
@@ -32,6 +34,8 @@ function DashboardScreen({
   walkEnabled: boolean
   carbEnabled: boolean
   sleepEnabled: boolean
+  walkMinutes: number
+  carbShiftHours: number
 }) {
   return (
     <>
@@ -62,9 +66,20 @@ function DashboardScreen({
       </div>
 
       <div className="mt-4">
-        <p className="text-[8px] font-medium uppercase tracking-[0.15em] text-muted-foreground">Glucose Trend</p>
+        <div className="flex items-center justify-between">
+          <p className="text-[8px] font-medium uppercase tracking-[0.15em] text-muted-foreground">Glucose Trend</p>
+          <span className="text-[7px] tabular-nums text-muted-foreground/70">{timeframe}</span>
+        </div>
         <div className="mt-1.5 rounded-lg border border-border/50 bg-card p-2">
-          <GlucoseMiniChart level={gain} />
+          <GlucoseMiniChart
+            timeframe={timeframe}
+            gain={gain}
+            walkEnabled={walkEnabled}
+            carbEnabled={carbEnabled}
+            sleepEnabled={sleepEnabled}
+            walkMinutes={walkMinutes}
+            carbShiftHours={carbShiftHours}
+          />
         </div>
       </div>
 
@@ -306,6 +321,8 @@ function InteractiveAppScreen() {
               walkEnabled={walkEnabled}
               carbEnabled={carbEnabled}
               sleepEnabled={sleepEnabled}
+              walkMinutes={walkMinutes}
+              carbShiftHours={carbShiftHours}
             />
           ) : activeScreen === "timeline" ? (
             <TimelineScreen

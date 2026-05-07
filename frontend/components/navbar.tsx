@@ -4,7 +4,7 @@ import { basePath } from "@/lib/assets"
 
 const links = [
   { label: "Overview", href: "#overview" },
-  { label: "App", href: "#quick-view" },
+  { label: "Score", href: "#stability-score" },
   { label: "Our Story", href: "#our-story" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "Team", href: "#team" },

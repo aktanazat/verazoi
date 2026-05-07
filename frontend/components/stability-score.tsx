@@ -38,7 +38,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   return <AppDataContext.Provider value={{ state }}>{children}</AppDataContext.Provider>
 }
 
-function useAppData() { return useContext(AppDataContext) }
+export function useAppData() { return useContext(AppDataContext) }
 
 const impactColors: Record<string, string> = {
   high: "bg-amber-800/10 text-amber-800",
