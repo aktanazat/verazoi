@@ -539,43 +539,97 @@ private struct TimelineRow: View {
     }
 }
 
+private let chartSamples = 64
+
+private func resampleValues(_ values: [Double], to target: Int) -> [Double] {
+    guard !values.isEmpty else { return Array(repeating: 0, count: target) }
+    if values.count == 1 { return Array(repeating: values[0], count: target) }
+    if values.count == target { return values }
+    let last = values.count - 1
+    return (0..<target).map { i in
+        let t = Double(i) / Double(target - 1) * Double(last)
+        let lo = Int(floor(t)), hi = min(last, lo + 1)
+        let frac = t - Double(lo)
+        return values[lo] * (1 - frac) + values[hi] * frac
+    }
+}
+
+private struct AnimatableValues: VectorArithmetic {
+    var values: [Double]
+    static var zero: AnimatableValues { AnimatableValues(values: Array(repeating: 0, count: chartSamples)) }
+    var magnitudeSquared: Double { values.reduce(0) { $0 + $1 * $1 } }
+    mutating func scale(by rhs: Double) { values = values.map { $0 * rhs } }
+    static func + (lhs: AnimatableValues, rhs: AnimatableValues) -> AnimatableValues {
+        let n = max(lhs.values.count, rhs.values.count)
+        let l = lhs.values + Array(repeating: 0.0, count: n - lhs.values.count)
+        let r = rhs.values + Array(repeating: 0.0, count: n - rhs.values.count)
+        return AnimatableValues(values: zip(l, r).map(+))
+    }
+    static func - (lhs: AnimatableValues, rhs: AnimatableValues) -> AnimatableValues {
+        let n = max(lhs.values.count, rhs.values.count)
+        let l = lhs.values + Array(repeating: 0.0, count: n - lhs.values.count)
+        let r = rhs.values + Array(repeating: 0.0, count: n - rhs.values.count)
+        return AnimatableValues(values: zip(l, r).map(-))
+    }
+    static func += (lhs: inout AnimatableValues, rhs: AnimatableValues) { lhs = lhs + rhs }
+    static func -= (lhs: inout AnimatableValues, rhs: AnimatableValues) { lhs = lhs - rhs }
+}
+
+private struct TrendShape: Shape {
+    var samples: AnimatableValues
+    var fill: Bool
+
+    var animatableData: AnimatableValues {
+        get { samples }
+        set { samples = newValue }
+    }
+
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+        let v = samples.values
+        guard v.count > 1 else { return p }
+        let minV = v.min() ?? 0
+        let maxV = v.max() ?? 1
+        let span = max(maxV - minV, 1)
+        let stepX = rect.width / CGFloat(v.count - 1)
+        for (i, value) in v.enumerated() {
+            let x = CGFloat(i) * stepX
+            let y = (1 - CGFloat((value - minV) / span)) * rect.height
+            if i == 0 { p.move(to: CGPoint(x: x, y: y)) } else {
+                let prevX = CGFloat(i - 1) * stepX
+                let prevY = (1 - CGFloat((v[i - 1] - minV) / span)) * rect.height
+                let cx = (prevX + x) / 2
+                p.addCurve(to: CGPoint(x: x, y: y), control1: CGPoint(x: cx, y: prevY), control2: CGPoint(x: cx, y: y))
+            }
+        }
+        if fill {
+            p.addLine(to: CGPoint(x: rect.width, y: rect.height))
+            p.addLine(to: CGPoint(x: 0, y: rect.height))
+            p.closeSubpath()
+        }
+        return p
+    }
+}
+
 struct StabilityTrendChart: View {
     let values: [Double]
 
+    private var samples: AnimatableValues {
+        AnimatableValues(values: resampleValues(values, to: chartSamples))
+    }
+
     var body: some View {
-        Canvas { ctx, size in
-            guard values.count > 1 else { return }
-            let minV = values.min() ?? 0
-            let maxV = values.max() ?? 1
-            let span = max(maxV - minV, 1)
-            let stepX = size.width / CGFloat(values.count - 1)
-
-            let path = Path { p in
-                for (i, v) in values.enumerated() {
-                    let x = CGFloat(i) * stepX
-                    let y = (1.0 - (v - minV) / span) * size.height
-                    if i == 0 { p.move(to: CGPoint(x: x, y: y)) } else {
-                        let prevX = CGFloat(i - 1) * stepX
-                        let prevY = (1.0 - (values[i - 1] - minV) / span) * size.height
-                        let cx = (prevX + x) / 2
-                        p.addCurve(to: CGPoint(x: x, y: y), control1: CGPoint(x: cx, y: prevY), control2: CGPoint(x: cx, y: y))
-                    }
-                }
-            }
-
-            let area = Path { p in
-                p.addPath(path)
-                p.addLine(to: CGPoint(x: size.width, y: size.height))
-                p.addLine(to: CGPoint(x: 0, y: size.height))
-                p.closeSubpath()
-            }
-
-            let gradient = Gradient(stops: [
-                .init(color: Color.vPrimary.opacity(0.18), location: 0),
-                .init(color: Color.vPrimary.opacity(0), location: 1),
-            ])
-            ctx.fill(area, with: .linearGradient(gradient, startPoint: .zero, endPoint: CGPoint(x: 0, y: size.height)))
-            ctx.stroke(path, with: .color(Color.vPrimary), style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
+        ZStack {
+            TrendShape(samples: samples, fill: true)
+                .fill(LinearGradient(
+                    stops: [
+                        .init(color: Color.vPrimary.opacity(0.18), location: 0),
+                        .init(color: Color.vPrimary.opacity(0), location: 1),
+                    ],
+                    startPoint: .top, endPoint: .bottom
+                ))
+            TrendShape(samples: samples, fill: false)
+                .stroke(Color.vPrimary, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
         }
         .animation(.easeInOut(duration: 0.55), value: values)
     }

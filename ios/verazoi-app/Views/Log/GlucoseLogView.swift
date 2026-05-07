@@ -134,20 +134,21 @@ struct GlucoseLogView: View {
                             } else {
                                 VStack(spacing: 0) {
                                     ForEach(Array(state.glucoseReadings.enumerated()), id: \.element.id) { index, reading in
-                                        HStack {
-                                            HStack(spacing: 16) {
-                                                Text(reading.time)
-                                                    .font(.system(size: 13))
-                                                    .foregroundStyle(Color.vMutedForeground)
-                                                VStack(alignment: .leading, spacing: 2) {
-                                                    Text("\(reading.value)")
-                                                        .font(.vSerif(20))
-                                                        .foregroundStyle(Color.vForeground)
-                                                        .accessibilityLabel("\(reading.value) milligrams per deciliter")
-                                                    Text(reading.timing.displayName)
-                                                        .font(.system(size: 11))
-                                                        .foregroundStyle(Color.vMutedForeground.opacity(0.7))
-                                                }
+                                        HStack(spacing: 14) {
+                                            Text(reading.time)
+                                                .font(.system(size: 12))
+                                                .foregroundStyle(Color.vMutedForeground)
+                                                .monospacedDigit()
+                                                .frame(width: 64, alignment: .leading)
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text("\(reading.value)")
+                                                    .font(.vSerif(20))
+                                                    .foregroundStyle(Color.vForeground)
+                                                    .monospacedDigit()
+                                                    .accessibilityLabel("\(reading.value) milligrams per deciliter")
+                                                Text(reading.timing.displayName)
+                                                    .font(.system(size: 11))
+                                                    .foregroundStyle(Color.vMutedForeground.opacity(0.7))
                                             }
                                             Spacer()
                                             TrendIcon(reading: reading, previous: index > 0 ? state.glucoseReadings[index - 1] : nil)
