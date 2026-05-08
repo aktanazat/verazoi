@@ -143,23 +143,48 @@ struct MercuryDashboardView: View {
     }
 
     private var trendAxis: some View {
-        let labels = axisLabels(count: 5)
-        return HStack {
-            ForEach(Array(labels.enumerated()), id: \.0) { _, l in
-                Text(l)
-                    .font(.system(size: 9))
-                    .foregroundStyle(Color.vMutedForeground.opacity(0.6))
-                if l != labels.last { Spacer() }
+        let labels = axisLabels()
+        return GeometryReader { geo in
+            ZStack(alignment: .topLeading) {
+                ForEach(Array(labels.enumerated()), id: \.0) { i, label in
+                    let frac = Double(i) / Double(max(labels.count - 1, 1))
+                    let alignment: HorizontalAlignment = i == 0 ? .leading : (i == labels.count - 1 ? .trailing : .center)
+                    Text(label)
+                        .font(.system(size: 9))
+                        .foregroundStyle(Color.vMutedForeground.opacity(0.6))
+                        .monospacedDigit()
+                        .frame(width: 60, alignment: alignmentToTextAlignment(alignment))
+                        .position(x: anchorX(frac: frac, width: geo.size.width, alignment: alignment), y: 8)
+                }
             }
         }
+        .frame(height: 16)
         .padding(.top, 2)
     }
 
-    private func axisLabels(count: Int) -> [String] {
+    private func alignmentToTextAlignment(_ a: HorizontalAlignment) -> Alignment {
+        switch a {
+        case .leading: return .leading
+        case .trailing: return .trailing
+        default: return .center
+        }
+    }
+
+    private func anchorX(frac: Double, width: CGFloat, alignment: HorizontalAlignment) -> CGFloat {
+        let x = CGFloat(frac) * width
+        switch alignment {
+        case .leading: return x + 30
+        case .trailing: return x - 30
+        default: return x
+        }
+    }
+
+    private func axisLabels() -> [String] {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
-        let now = Date()
+        formatter.dateFormat = range == .week ? "EEE" : "MMM d"
+        let count = range == .week ? 4 : 5
         let cal = Calendar.current
+        let now = cal.startOfDay(for: Date())
         var out: [String] = []
         for i in 0..<count {
             let frac = Double(i) / Double(max(count - 1, 1))

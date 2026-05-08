@@ -157,6 +157,8 @@ struct ActivityLogView: View {
                                             Text(event.time)
                                                 .font(.system(size: 11))
                                                 .foregroundStyle(Color.vMutedForeground.opacity(0.7))
+                                                .monospacedDigit()
+                                                .frame(width: 64, alignment: .trailing)
                                         }
                                         .padding(.vertical, 12)
                                         .contextMenu {
